@@ -1,0 +1,120 @@
+{
+  "subscriptions": [
+    {
+      "id": "1",
+      "title": "Stander",
+      "price": 60,
+      "lessons": 12,
+      "duration": "28 hrs 40 mins"
+    },
+    {
+      "id": "2",
+      "title": "Premium",
+      "price": 120,
+      "lessons": 24,
+      "duration": "56 hrs 20 mins"
+    }
+  ],
+  "tutors": [
+    {
+      "id": "1",
+      "name": "karim Mohammed",
+      "rating": 4.5,
+      "isPositive": true,
+      "accent": "Australian Accent",
+      "interests": ["Arabic", "English", "Mathematics"],
+      "image": "../../../../assets/karim.png",
+      "video": "https://youtu.be/ZK-rNEhJIDs?si=VFbJ-7zyTCpObx9s",
+      "isAvailable": true,
+      "country": "au",
+      "description": "Experienced tutor specializing in Arabic, English, and Mathematics. With over 5 years of teaching experience, I focus on making complex concepts easy to understand through practical examples and interactive learning methods."
+    },
+    {
+      "id": "2",
+      "name": "karim Mohammed",
+      "rating": 4.5,
+      "isPositive": true,
+      "accent": "British Accent",
+      "interests": ["English", "Science", "Programming"],
+      "image": "../../../../assets/karim.png",
+      "video": "https://youtu.be/ZK-rNEhJIDs?si=VFbJ-7zyTCpObx9s",
+      "isAvailable": true,
+      "country": "uk",
+      "description": "Passionate about teaching Science and Programming. I combine my technical expertise with clear communication to help students master both theoretical concepts and practical skills. Specialized in Python and web development."
+    },
+    {
+      "id": "3",
+      "name": "karim Mohammed",
+      "rating": 4.5,
+      "isPositive": true,
+      "accent": "American Accent",
+      "interests": ["Business", "English"],
+      "image": "../../../../assets/karim.png",
+      "video": "https://youtu.be/ZK-rNEhJIDs?si=VFbJ-7zyTCpObx9s",
+      "isAvailable": false,
+      "country": "us",
+      "description": "Business and English language expert with a focus on professional communication. I help students develop strong presentation skills, business writing, and conversational fluency. Perfect for those looking to advance their career or academic goals."
+    },
+    {
+      "id": "4",
+      "name": "karim Mohammed",
+      "rating": 4.5,
+      "isPositive": true,
+      "accent": "Canadian Accent",
+      "interests": ["Mathematics", "Science"],
+      "image": "../../../../assets/karim.png",
+      "video": "https://youtu.be/ZK-rNEhJIDs?si=VFbJ-7zyTCpObx9s",
+      "isAvailable": true,
+      "country": "ca",
+      "description": "Experienced tutor in Mathematics and Science. I use a combination of traditional teaching methods and modern technology to create an engaging and effective learning environment."
+    },
+    {
+      "id": "5",
+      "name": "karim Mohammed",
+      "rating": 4.5,
+      "isPositive": true,
+      "accent": "Arabic Accent",
+      "interests": ["Arabic", "Business"],
+      "image": "../../../../assets/karim.png",
+      "video": "https://youtu.be/ZK-rNEhJIDs?si=VFbJ-7zyTCpObx9s",
+      "isAvailable": false,
+      "country": "ae",
+      "description": "Native Arabic speaker with expertise in teaching Arabic language and culture. I also offer business lessons, focusing on entrepreneurship and management."
+    }
+  ],
+  "appointments": [
+    {
+      "id": "1",
+      "date": "Mon, 11 June 2024",
+      "time": "08:00 - 12:00",
+      "instructor": {
+        "id": "1",
+        "name": "karim mohamed",
+        "role": "instructor",
+        "avatar": "../../../../assets/karim.png"
+      }
+    },
+    {
+      "id": "2",
+      "date": "Mon, 11 June 2024",
+      "time": "08:00 - 12:00",
+      "instructor": {
+        "id": "2",
+        "name": "karim mohamed",
+        "role": "instructor",
+        "avatar": "../../../../assets/karim.png"
+      }
+    },
+    {
+      "id": "3",
+      "date": "Mon, 11 June 2024",
+      "time": "08:00 - 12:00",
+      "instructor": {
+        "id": "2",
+        "name": "karim mohamed",
+        "role": "instructor",
+        "avatar": "../../../../assets/karim.png"
+      }
+    }
+  ]
+}

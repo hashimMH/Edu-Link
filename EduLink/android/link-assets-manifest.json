@@ -1,0 +1,149 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/SF-Pro-Display-Black.ttf",
+      "sha1": "603e9e112517347005c9bba34636ece20262f85f"
+    },
+    {
+      "path": "assets/fonts/SF-Pro-Display-BlackItalic.ttf",
+      "sha1": "d65cbb43be368905eccb7aca5afe6235d409fe75"
+    },
+    {
+      "path": "assets/fonts/SF-Pro-Display-Bold.ttf",
+      "sha1": "b31760a8e53d3d5a2fa63ed70d74c61db7e5771a"
+    },
+    {
+      "path": "assets/fonts/SF-Pro-Display-BoldItalic.ttf",
+      "sha1": "fd393cb3ff586764822f5e15f1a5524d0eabaae3"
+    },
+    {
+      "path": "assets/fonts/SF-Pro-Display-Heavy.ttf",
+      "sha1": "12e30db356b6fa487420245ef78b89cabd19965d"
+    },
+    {
+      "path": "assets/fonts/SF-Pro-Display-HeavyItalic.ttf",
+      "sha1": "effa208ff9ce52bb80f3f4b61d66108a6a272363"
+    },
+    {
+      "path": "assets/fonts/SF-Pro-Display-Light.ttf",
+      "sha1": "9a5c0dbf1c213b7cc9a47fbff9416ba25ab8c659"
+    },
+    {
+      "path": "assets/fonts/SF-Pro-Display-LightItalic.ttf",
+      "sha1": "d7d1e83db967a9905b28c78683234e7d3261f218"
+    },
+    {
+      "path": "assets/fonts/SF-Pro-Display-Medium.ttf",
+      "sha1": "af0e4a4d7f6b6cad021daf4c78cc664512cd0d50"
+    },
+    {
+      "path": "assets/fonts/SF-Pro-Display-MediumItalic.ttf",
+      "sha1": "fc567af5d72e830bb24ff53132c5515ca13d43e2"
+    },
+    {
+      "path": "assets/fonts/SF-Pro-Display-Regular.ttf",
+      "sha1": "879e38712cc5064b619c50929ca2299c8a02276d"
+    },
+    {
+      "path": "assets/fonts/SF-Pro-Display-RegularItalic.ttf",
+      "sha1": "184bbdeb2ef7b91f5dcc0dc46845b8ea1912a350"
+    },
+    {
+      "path": "assets/fonts/SF-Pro-Display-Semibold.ttf",
+      "sha1": "754ee374c9c73bfc56d2404c1192df6621e64d72"
+    },
+    {
+      "path": "assets/fonts/SF-Pro-Display-SemiboldItalic.ttf",
+      "sha1": "8a43207a5eb7d28b6fcb876781f38bf4f5bf77a3"
+    },
+    {
+      "path": "assets/fonts/SF-Pro-Display-Thin.ttf",
+      "sha1": "3a65507c71d280df7104e0d5e403530b3b948341"
+    },
+    {
+      "path": "assets/fonts/SF-Pro-Display-ThinItalic.ttf",
+      "sha1": "03fb6d22ed2879797d0bb3915dfda1179c4cab23"
+    },
+    {
+      "path": "assets/fonts/SF-Pro-Display-Ultralight.ttf",
+      "sha1": "e343177743bb0749d37ad75c46863d340510e82a"
+    },
+    {
+      "path": "assets/fonts/SF-Pro-Display-UltralightItalic.ttf",
+      "sha1": "370d379e8b82cd4ea1f3bca28bdf97b2860b1a2d"
+    },
+    {
+      "path": "assets/fonts/SF-Pro-Text-Bold.ttf",
+      "sha1": "5539dd5c130dc0b57088995e067f20d39f5b0141"
+    },
+    {
+      "path": "assets/fonts/SF-Pro-Text-BoldItalic.ttf",
+      "sha1": "e9e62355d91360224cd0446cfa1a0d8cc86f5719"
+    },
+    {
+      "path": "assets/fonts/SF-Pro-Text-Heavy.ttf",
+      "sha1": "d77d84fcc8ff538b3045928346c29cea333ab99a"
+    },
+    {
+      "path": "assets/fonts/SF-Pro-Text-HeavyItalic.ttf",
+      "sha1": "88b8e1bfc8eb6a16c1edeb1f07c28aaa5b0c7fe6"
+    },
+    {
+      "path": "assets/fonts/SF-Pro-Text-Light.ttf",
+      "sha1": "fe67769b09a8ea1d40027aee45e9ddf99d34cc94"
+    },
+    {
+      "path": "assets/fonts/SF-Pro-Text-LightItalic.ttf",
+      "sha1": "123c29d3a6d4747fccb7c371edf474dc38df1846"
+    },
+    {
+      "path": "assets/fonts/SF-Pro-Text-Medium.ttf",
+      "sha1": "1bd514af544e1ef4bb2aa8320a16e25b257482e5"
+    },
+    {
+      "path": "assets/fonts/SF-Pro-Text-MediumItalic.ttf",
+      "sha1": "87272cdf45270cfea18210e5655bdace4e12dde3"
+    },
+    {
+      "path": "assets/fonts/SF-Pro-Text-Regular.ttf",
+      "sha1": "671791f3d3e28017f2abf7aa57bbb661caf8642b"
+    },
+    {
+      "path": "assets/fonts/SF-Pro-Text-RegularItalic.ttf",
+      "sha1": "6f4737d9266d1b80ee25c7c998a70c6fbf9aae37"
+    },
+    {
+      "path": "assets/fonts/SF-Pro-Text-Semibold.ttf",
+      "sha1": "778ed24d5b170e2ae9ab24f5cc460d9f03823e39"
+    },
+    {
+      "path": "assets/fonts/SF-Pro-Text-SemiboldItalic.ttf",
+      "sha1": "bd82b31ce0c1c72b1686f07d5383bb5b09f11d84"
+    },
+    {
+      "path": "assets/fonts/Vazir-Black-FD.ttf",
+      "sha1": "3e2c897fc962579d1fe222336f9fa8e723dbcad9"
+    },
+    {
+      "path": "assets/fonts/Vazir-Bold-FD.ttf",
+      "sha1": "6dd51654bc951550a9f19261c63fb18169a4acd5"
+    },
+    {
+      "path": "assets/fonts/Vazir-FD.ttf",
+      "sha1": "a53d11142e84cb0116edfe913f9b77fe0a004396"
+    },
+    {
+      "path": "assets/fonts/Vazir-Light-FD.ttf",
+      "sha1": "e7ccb53a7b7658f95eb538396defce3d7de9a398"
+    },
+    {
+      "path": "assets/fonts/Vazir-Medium-FD.ttf",
+      "sha1": "c4fa59f8c9df54337ea5ba4737c8e74105b439ab"
+    },
+    {
+      "path": "assets/fonts/Vazir-Thin-FD.ttf",
+      "sha1": "301485baf60b51cab153630d071b90941d22dff0"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "lessons": [
+    {
+      "id": "1",
+      "title": "Introduction",
+      "duration": "6:10 mins",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "createdAt": "2025-02-04T20:30:00Z"
+    },
+    {
+      "id": "2",
+      "title": "grammer",
+      "duration": "6:10 mins",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "createdAt": "2025-02-04T19:45:00Z"
+    },
+    {
+      "id": "3",
+      "title": "base language",
+      "duration": "6:10 mins",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "createdAt": "2025-02-04T18:20:00Z"
+    }
+  ]
+}

@@ -1,0 +1,864 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 54;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		00E356F31AD99517003FC87E /* EduLinkTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* EduLinkTests.m */; };
+		020E7BA10E194EDB96C68A26 /* SF-Pro-Text-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D76933923F4A4A3C83AF2481 /* SF-Pro-Text-Regular.ttf */; };
+		03B755474ED04C6289D15166 /* SF-Pro-Display-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 34C085B5CC0D427FAE7DF19E /* SF-Pro-Display-MediumItalic.ttf */; };
+		056A017964FD4F3F9DC6104C /* SF-Pro-Text-RegularItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 80DB994BD64346D9860B64C2 /* SF-Pro-Text-RegularItalic.ttf */; };
+		0C80B921A6F3F58F76C31292 /* libPods-EduLink.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-EduLink.a */; };
+		11376E701797450EB71AE2FD /* Vazir-Light-FD.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8E843527E41E41ED8D837700 /* Vazir-Light-FD.ttf */; };
+		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
+		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		33F3CAB91D7A4AFAA59C08AF /* SF-Pro-Display-UltralightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 956B7C2920384CCE97545085 /* SF-Pro-Display-UltralightItalic.ttf */; };
+		381420EC5C4F4754A028A16B /* SF-Pro-Display-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8A2C25D6ADE94248AB339198 /* SF-Pro-Display-Medium.ttf */; };
+		3B3F84DCB73B404A92BAF0EB /* SF-Pro-Display-HeavyItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 12483DC62203490CA54FF6C3 /* SF-Pro-Display-HeavyItalic.ttf */; };
+		3B91C4DDCB994CB383FF6BBE /* Vazir-Thin-FD.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E84621C9D31C4F9398CDFCCE /* Vazir-Thin-FD.ttf */; };
+		449A96A6DD9E247A72036289 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
+		4CF678480E4A4FA3A12C4D9A /* SF-Pro-Text-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 81DFDE92B630456EAFA296B9 /* SF-Pro-Text-Medium.ttf */; };
+		5F0D8E206C5647E58D039156 /* SF-Pro-Display-RegularItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6867B585D174467F8F34E6A2 /* SF-Pro-Display-RegularItalic.ttf */; };
+		6A03BF86A755496382C451DD /* SF-Pro-Text-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 193B4EBAB5AA4AE8A55529D6 /* SF-Pro-Text-LightItalic.ttf */; };
+		7053CC9B1EDC4FC59909B3F8 /* SF-Pro-Display-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0F6584F224BF4872853873B5 /* SF-Pro-Display-ThinItalic.ttf */; };
+		7235A0E05A7C43048FD507E6 /* SF-Pro-Display-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 92522AE4C8264135B7A6E9C0 /* SF-Pro-Display-Regular.ttf */; };
+		75E708E5B1E942EE8536DC39 /* Vazir-Black-FD.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B397C13A2A6F4287A77B6D9F /* Vazir-Black-FD.ttf */; };
+		7699B88040F8A987B510C191 /* libPods-EduLink-EduLinkTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-EduLink-EduLinkTests.a */; };
+		769AF464311D4E8D80DC56E1 /* SF-Pro-Text-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 97045B02728545EE8684B397 /* SF-Pro-Text-BoldItalic.ttf */; };
+		77A1AAFB25B543ECA2B72A99 /* SF-Pro-Display-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1E564D719A0D4610AB045C08 /* SF-Pro-Display-Black.ttf */; };
+		7F9230A86D77424DA07E7DF8 /* SF-Pro-Display-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D6D1351372184B33A5746E5C /* SF-Pro-Display-Bold.ttf */; };
+		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		933D8C897A8A462EBFABD1DB /* SF-Pro-Text-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8412B3B80BD74BB687FD1F27 /* SF-Pro-Text-Semibold.ttf */; };
+		9E647AF3DA084AABA48171E2 /* SF-Pro-Text-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AD574A3D2F6F4693962ACE20 /* SF-Pro-Text-Light.ttf */; };
+		A6AD805C125B48388A7D9E7B /* SF-Pro-Text-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A7FF9F08550140869C087EF8 /* SF-Pro-Text-MediumItalic.ttf */; };
+		AC9D2B62E10F42B79EC4FF35 /* SF-Pro-Text-Heavy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CA852A7770B743C6A03A1201 /* SF-Pro-Text-Heavy.ttf */; };
+		B2E1C6B817EA415C989A7DBB /* SF-Pro-Display-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 45BCAF2BEC764556A486346C /* SF-Pro-Display-LightItalic.ttf */; };
+		B808872693914AF6A1CC087A /* SF-Pro-Display-SemiboldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BD14812FE3DB4FD98242A1B0 /* SF-Pro-Display-SemiboldItalic.ttf */; };
+		BB1C3364A8C74A76A99895FD /* SF-Pro-Display-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4B3568865A7242F682A0FFBD /* SF-Pro-Display-Light.ttf */; };
+		C6A3A2AA93DE420FB10CA4D2 /* SF-Pro-Text-HeavyItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 693CFF1617C844E494C2162C /* SF-Pro-Text-HeavyItalic.ttf */; };
+		C75194AE60214FD98D16136A /* Vazir-Bold-FD.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E775EEC886B64E7C8007BCC8 /* Vazir-Bold-FD.ttf */; };
+		CA68E37B88044624853666AD /* SF-Pro-Display-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B1A1AD0D08144A349042E639 /* SF-Pro-Display-Semibold.ttf */; };
+		D0D5D43EE02E4B4DA23B2AE5 /* SF-Pro-Display-Ultralight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6A904EEF606742DF8AB81426 /* SF-Pro-Display-Ultralight.ttf */; };
+		E5B2C02ED36746EEA0A38A68 /* SF-Pro-Display-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 512BE003D7CB4DB09A49BC1F /* SF-Pro-Display-BoldItalic.ttf */; };
+		ED7971D1DDC14A409EA9E163 /* SF-Pro-Text-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2501F331929E4B17BD019B5F /* SF-Pro-Text-Bold.ttf */; };
+		EE713BD8B09F44BDBE67A741 /* SF-Pro-Display-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BDAF3F32DCC54E12AEBEE770 /* SF-Pro-Display-BlackItalic.ttf */; };
+		EF609EDEE8FB4E48A0BB3550 /* SF-Pro-Display-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4E2A429E5A5C4FA7A7CCA802 /* SF-Pro-Display-Thin.ttf */; };
+		F1302583C30D45F79477C4ED /* Vazir-FD.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 504E8DBDE17A448B95617B6D /* Vazir-FD.ttf */; };
+		F95020319E2B4980BA7F14CB /* SF-Pro-Display-Heavy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 70E080DC7EBF4800B25F73EE /* SF-Pro-Display-Heavy.ttf */; };
+		FA27350397ED4A63B1265A7A /* SF-Pro-Text-SemiboldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0DAFB9E16F5F4D33A6DB24CA /* SF-Pro-Text-SemiboldItalic.ttf */; };
+		FCBD0587CD334632BA153C4D /* Vazir-Medium-FD.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D8FFB5774284E3BAFC137CD /* Vazir-Medium-FD.ttf */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		00E356F41AD99517003FC87E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
+			remoteInfo = EduLink;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		00E356EE1AD99517003FC87E /* EduLinkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EduLinkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		00E356F21AD99517003FC87E /* EduLinkTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EduLinkTests.m; sourceTree = "<group>"; };
+		0DAFB9E16F5F4D33A6DB24CA /* SF-Pro-Text-SemiboldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Text-SemiboldItalic.ttf"; path = "../assets/fonts/SF-Pro-Text-SemiboldItalic.ttf"; sourceTree = "<group>"; };
+		0F6584F224BF4872853873B5 /* SF-Pro-Display-ThinItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Display-ThinItalic.ttf"; path = "../assets/fonts/SF-Pro-Display-ThinItalic.ttf"; sourceTree = "<group>"; };
+		12483DC62203490CA54FF6C3 /* SF-Pro-Display-HeavyItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Display-HeavyItalic.ttf"; path = "../assets/fonts/SF-Pro-Display-HeavyItalic.ttf"; sourceTree = "<group>"; };
+		13B07F961A680F5B00A75B9A /* EduLink.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EduLink.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = EduLink/AppDelegate.h; sourceTree = "<group>"; };
+		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = EduLink/AppDelegate.mm; sourceTree = "<group>"; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = EduLink/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = EduLink/Info.plist; sourceTree = "<group>"; };
+		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = EduLink/main.m; sourceTree = "<group>"; };
+		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = EduLink/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		193B4EBAB5AA4AE8A55529D6 /* SF-Pro-Text-LightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Text-LightItalic.ttf"; path = "../assets/fonts/SF-Pro-Text-LightItalic.ttf"; sourceTree = "<group>"; };
+		19F6CBCC0A4E27FBF8BF4A61 /* libPods-EduLink-EduLinkTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-EduLink-EduLinkTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D8FFB5774284E3BAFC137CD /* Vazir-Medium-FD.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Vazir-Medium-FD.ttf"; path = "../assets/fonts/Vazir-Medium-FD.ttf"; sourceTree = "<group>"; };
+		1E564D719A0D4610AB045C08 /* SF-Pro-Display-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Display-Black.ttf"; path = "../assets/fonts/SF-Pro-Display-Black.ttf"; sourceTree = "<group>"; };
+		2501F331929E4B17BD019B5F /* SF-Pro-Text-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Text-Bold.ttf"; path = "../assets/fonts/SF-Pro-Text-Bold.ttf"; sourceTree = "<group>"; };
+		34C085B5CC0D427FAE7DF19E /* SF-Pro-Display-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Display-MediumItalic.ttf"; path = "../assets/fonts/SF-Pro-Display-MediumItalic.ttf"; sourceTree = "<group>"; };
+		3B4392A12AC88292D35C810B /* Pods-EduLink.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EduLink.debug.xcconfig"; path = "Target Support Files/Pods-EduLink/Pods-EduLink.debug.xcconfig"; sourceTree = "<group>"; };
+		45BCAF2BEC764556A486346C /* SF-Pro-Display-LightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Display-LightItalic.ttf"; path = "../assets/fonts/SF-Pro-Display-LightItalic.ttf"; sourceTree = "<group>"; };
+		4B3568865A7242F682A0FFBD /* SF-Pro-Display-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Display-Light.ttf"; path = "../assets/fonts/SF-Pro-Display-Light.ttf"; sourceTree = "<group>"; };
+		4E2A429E5A5C4FA7A7CCA802 /* SF-Pro-Display-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Display-Thin.ttf"; path = "../assets/fonts/SF-Pro-Display-Thin.ttf"; sourceTree = "<group>"; };
+		504E8DBDE17A448B95617B6D /* Vazir-FD.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Vazir-FD.ttf"; path = "../assets/fonts/Vazir-FD.ttf"; sourceTree = "<group>"; };
+		512BE003D7CB4DB09A49BC1F /* SF-Pro-Display-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Display-BoldItalic.ttf"; path = "../assets/fonts/SF-Pro-Display-BoldItalic.ttf"; sourceTree = "<group>"; };
+		5709B34CF0A7D63546082F79 /* Pods-EduLink.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EduLink.release.xcconfig"; path = "Target Support Files/Pods-EduLink/Pods-EduLink.release.xcconfig"; sourceTree = "<group>"; };
+		5B7EB9410499542E8C5724F5 /* Pods-EduLink-EduLinkTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EduLink-EduLinkTests.debug.xcconfig"; path = "Target Support Files/Pods-EduLink-EduLinkTests/Pods-EduLink-EduLinkTests.debug.xcconfig"; sourceTree = "<group>"; };
+		5DCACB8F33CDC322A6C60F78 /* libPods-EduLink.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-EduLink.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6867B585D174467F8F34E6A2 /* SF-Pro-Display-RegularItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Display-RegularItalic.ttf"; path = "../assets/fonts/SF-Pro-Display-RegularItalic.ttf"; sourceTree = "<group>"; };
+		693CFF1617C844E494C2162C /* SF-Pro-Text-HeavyItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Text-HeavyItalic.ttf"; path = "../assets/fonts/SF-Pro-Text-HeavyItalic.ttf"; sourceTree = "<group>"; };
+		6A904EEF606742DF8AB81426 /* SF-Pro-Display-Ultralight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Display-Ultralight.ttf"; path = "../assets/fonts/SF-Pro-Display-Ultralight.ttf"; sourceTree = "<group>"; };
+		70E080DC7EBF4800B25F73EE /* SF-Pro-Display-Heavy.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Display-Heavy.ttf"; path = "../assets/fonts/SF-Pro-Display-Heavy.ttf"; sourceTree = "<group>"; };
+		80DB994BD64346D9860B64C2 /* SF-Pro-Text-RegularItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Text-RegularItalic.ttf"; path = "../assets/fonts/SF-Pro-Text-RegularItalic.ttf"; sourceTree = "<group>"; };
+		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = EduLink/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		81DFDE92B630456EAFA296B9 /* SF-Pro-Text-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Text-Medium.ttf"; path = "../assets/fonts/SF-Pro-Text-Medium.ttf"; sourceTree = "<group>"; };
+		8412B3B80BD74BB687FD1F27 /* SF-Pro-Text-Semibold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Text-Semibold.ttf"; path = "../assets/fonts/SF-Pro-Text-Semibold.ttf"; sourceTree = "<group>"; };
+		89C6BE57DB24E9ADA2F236DE /* Pods-EduLink-EduLinkTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EduLink-EduLinkTests.release.xcconfig"; path = "Target Support Files/Pods-EduLink-EduLinkTests/Pods-EduLink-EduLinkTests.release.xcconfig"; sourceTree = "<group>"; };
+		8A2C25D6ADE94248AB339198 /* SF-Pro-Display-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Display-Medium.ttf"; path = "../assets/fonts/SF-Pro-Display-Medium.ttf"; sourceTree = "<group>"; };
+		8E843527E41E41ED8D837700 /* Vazir-Light-FD.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Vazir-Light-FD.ttf"; path = "../assets/fonts/Vazir-Light-FD.ttf"; sourceTree = "<group>"; };
+		92522AE4C8264135B7A6E9C0 /* SF-Pro-Display-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Display-Regular.ttf"; path = "../assets/fonts/SF-Pro-Display-Regular.ttf"; sourceTree = "<group>"; };
+		956B7C2920384CCE97545085 /* SF-Pro-Display-UltralightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Display-UltralightItalic.ttf"; path = "../assets/fonts/SF-Pro-Display-UltralightItalic.ttf"; sourceTree = "<group>"; };
+		97045B02728545EE8684B397 /* SF-Pro-Text-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Text-BoldItalic.ttf"; path = "../assets/fonts/SF-Pro-Text-BoldItalic.ttf"; sourceTree = "<group>"; };
+		A7FF9F08550140869C087EF8 /* SF-Pro-Text-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Text-MediumItalic.ttf"; path = "../assets/fonts/SF-Pro-Text-MediumItalic.ttf"; sourceTree = "<group>"; };
+		AD574A3D2F6F4693962ACE20 /* SF-Pro-Text-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Text-Light.ttf"; path = "../assets/fonts/SF-Pro-Text-Light.ttf"; sourceTree = "<group>"; };
+		B1A1AD0D08144A349042E639 /* SF-Pro-Display-Semibold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Display-Semibold.ttf"; path = "../assets/fonts/SF-Pro-Display-Semibold.ttf"; sourceTree = "<group>"; };
+		B397C13A2A6F4287A77B6D9F /* Vazir-Black-FD.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Vazir-Black-FD.ttf"; path = "../assets/fonts/Vazir-Black-FD.ttf"; sourceTree = "<group>"; };
+		BD14812FE3DB4FD98242A1B0 /* SF-Pro-Display-SemiboldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Display-SemiboldItalic.ttf"; path = "../assets/fonts/SF-Pro-Display-SemiboldItalic.ttf"; sourceTree = "<group>"; };
+		BDAF3F32DCC54E12AEBEE770 /* SF-Pro-Display-BlackItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Display-BlackItalic.ttf"; path = "../assets/fonts/SF-Pro-Display-BlackItalic.ttf"; sourceTree = "<group>"; };
+		CA852A7770B743C6A03A1201 /* SF-Pro-Text-Heavy.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Text-Heavy.ttf"; path = "../assets/fonts/SF-Pro-Text-Heavy.ttf"; sourceTree = "<group>"; };
+		D6D1351372184B33A5746E5C /* SF-Pro-Display-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Display-Bold.ttf"; path = "../assets/fonts/SF-Pro-Display-Bold.ttf"; sourceTree = "<group>"; };
+		D76933923F4A4A3C83AF2481 /* SF-Pro-Text-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Text-Regular.ttf"; path = "../assets/fonts/SF-Pro-Text-Regular.ttf"; sourceTree = "<group>"; };
+		E775EEC886B64E7C8007BCC8 /* Vazir-Bold-FD.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Vazir-Bold-FD.ttf"; path = "../assets/fonts/Vazir-Bold-FD.ttf"; sourceTree = "<group>"; };
+		E84621C9D31C4F9398CDFCCE /* Vazir-Thin-FD.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Vazir-Thin-FD.ttf"; path = "../assets/fonts/Vazir-Thin-FD.ttf"; sourceTree = "<group>"; };
+		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		00E356EB1AD99517003FC87E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7699B88040F8A987B510C191 /* libPods-EduLink-EduLinkTests.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		13B07F8C1A680F5B00A75B9A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0C80B921A6F3F58F76C31292 /* libPods-EduLink.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		00E356EF1AD99517003FC87E /* EduLinkTests */ = {
+			isa = PBXGroup;
+			children = (
+				00E356F21AD99517003FC87E /* EduLinkTests.m */,
+				00E356F01AD99517003FC87E /* Supporting Files */,
+			);
+			path = EduLinkTests;
+			sourceTree = "<group>";
+		};
+		00E356F01AD99517003FC87E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				00E356F11AD99517003FC87E /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		13B07FAE1A68108700A75B9A /* EduLink */ = {
+			isa = PBXGroup;
+			children = (
+				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
+				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
+				13B07FB51A68108700A75B9A /* Images.xcassets */,
+				13B07FB61A68108700A75B9A /* Info.plist */,
+				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
+				13B07FB71A68108700A75B9A /* main.m */,
+				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
+			);
+			name = EduLink;
+			sourceTree = "<group>";
+		};
+		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
+				5DCACB8F33CDC322A6C60F78 /* libPods-EduLink.a */,
+				19F6CBCC0A4E27FBF8BF4A61 /* libPods-EduLink-EduLinkTests.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5787AE8F14F74656923DB69D /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				1E564D719A0D4610AB045C08 /* SF-Pro-Display-Black.ttf */,
+				BDAF3F32DCC54E12AEBEE770 /* SF-Pro-Display-BlackItalic.ttf */,
+				D6D1351372184B33A5746E5C /* SF-Pro-Display-Bold.ttf */,
+				512BE003D7CB4DB09A49BC1F /* SF-Pro-Display-BoldItalic.ttf */,
+				70E080DC7EBF4800B25F73EE /* SF-Pro-Display-Heavy.ttf */,
+				12483DC62203490CA54FF6C3 /* SF-Pro-Display-HeavyItalic.ttf */,
+				4B3568865A7242F682A0FFBD /* SF-Pro-Display-Light.ttf */,
+				45BCAF2BEC764556A486346C /* SF-Pro-Display-LightItalic.ttf */,
+				8A2C25D6ADE94248AB339198 /* SF-Pro-Display-Medium.ttf */,
+				34C085B5CC0D427FAE7DF19E /* SF-Pro-Display-MediumItalic.ttf */,
+				92522AE4C8264135B7A6E9C0 /* SF-Pro-Display-Regular.ttf */,
+				6867B585D174467F8F34E6A2 /* SF-Pro-Display-RegularItalic.ttf */,
+				B1A1AD0D08144A349042E639 /* SF-Pro-Display-Semibold.ttf */,
+				BD14812FE3DB4FD98242A1B0 /* SF-Pro-Display-SemiboldItalic.ttf */,
+				4E2A429E5A5C4FA7A7CCA802 /* SF-Pro-Display-Thin.ttf */,
+				0F6584F224BF4872853873B5 /* SF-Pro-Display-ThinItalic.ttf */,
+				6A904EEF606742DF8AB81426 /* SF-Pro-Display-Ultralight.ttf */,
+				956B7C2920384CCE97545085 /* SF-Pro-Display-UltralightItalic.ttf */,
+				2501F331929E4B17BD019B5F /* SF-Pro-Text-Bold.ttf */,
+				97045B02728545EE8684B397 /* SF-Pro-Text-BoldItalic.ttf */,
+				CA852A7770B743C6A03A1201 /* SF-Pro-Text-Heavy.ttf */,
+				693CFF1617C844E494C2162C /* SF-Pro-Text-HeavyItalic.ttf */,
+				AD574A3D2F6F4693962ACE20 /* SF-Pro-Text-Light.ttf */,
+				193B4EBAB5AA4AE8A55529D6 /* SF-Pro-Text-LightItalic.ttf */,
+				81DFDE92B630456EAFA296B9 /* SF-Pro-Text-Medium.ttf */,
+				A7FF9F08550140869C087EF8 /* SF-Pro-Text-MediumItalic.ttf */,
+				D76933923F4A4A3C83AF2481 /* SF-Pro-Text-Regular.ttf */,
+				80DB994BD64346D9860B64C2 /* SF-Pro-Text-RegularItalic.ttf */,
+				8412B3B80BD74BB687FD1F27 /* SF-Pro-Text-Semibold.ttf */,
+				0DAFB9E16F5F4D33A6DB24CA /* SF-Pro-Text-SemiboldItalic.ttf */,
+				B397C13A2A6F4287A77B6D9F /* Vazir-Black-FD.ttf */,
+				E775EEC886B64E7C8007BCC8 /* Vazir-Bold-FD.ttf */,
+				504E8DBDE17A448B95617B6D /* Vazir-FD.ttf */,
+				8E843527E41E41ED8D837700 /* Vazir-Light-FD.ttf */,
+				1D8FFB5774284E3BAFC137CD /* Vazir-Medium-FD.ttf */,
+				E84621C9D31C4F9398CDFCCE /* Vazir-Thin-FD.ttf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Libraries;
+			sourceTree = "<group>";
+		};
+		83CBB9F61A601CBA00E9B192 = {
+			isa = PBXGroup;
+			children = (
+				13B07FAE1A68108700A75B9A /* EduLink */,
+				832341AE1AAA6A7D00B99B32 /* Libraries */,
+				00E356EF1AD99517003FC87E /* EduLinkTests */,
+				83CBBA001A601CBA00E9B192 /* Products */,
+				2D16E6871FA4F8E400B85C8A /* Frameworks */,
+				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				5787AE8F14F74656923DB69D /* Resources */,
+			);
+			indentWidth = 2;
+			sourceTree = "<group>";
+			tabWidth = 2;
+			usesTabs = 0;
+		};
+		83CBBA001A601CBA00E9B192 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				13B07F961A680F5B00A75B9A /* EduLink.app */,
+				00E356EE1AD99517003FC87E /* EduLinkTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				3B4392A12AC88292D35C810B /* Pods-EduLink.debug.xcconfig */,
+				5709B34CF0A7D63546082F79 /* Pods-EduLink.release.xcconfig */,
+				5B7EB9410499542E8C5724F5 /* Pods-EduLink-EduLinkTests.debug.xcconfig */,
+				89C6BE57DB24E9ADA2F236DE /* Pods-EduLink-EduLinkTests.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		00E356ED1AD99517003FC87E /* EduLinkTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "EduLinkTests" */;
+			buildPhases = (
+				A55EABD7B0C7F3A422A6CC61 /* [CP] Check Pods Manifest.lock */,
+				00E356EA1AD99517003FC87E /* Sources */,
+				00E356EB1AD99517003FC87E /* Frameworks */,
+				00E356EC1AD99517003FC87E /* Resources */,
+				C59DA0FBD6956966B86A3779 /* [CP] Embed Pods Frameworks */,
+				F6A41C54EA430FDDC6A6ED99 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				00E356F51AD99517003FC87E /* PBXTargetDependency */,
+			);
+			name = EduLinkTests;
+			productReference = 00E356EE1AD99517003FC87E /* EduLinkTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		13B07F861A680F5B00A75B9A /* EduLink */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "EduLink" */;
+			buildPhases = (
+				C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */,
+				13B07F871A680F5B00A75B9A /* Sources */,
+				13B07F8C1A680F5B00A75B9A /* Frameworks */,
+				13B07F8E1A680F5B00A75B9A /* Resources */,
+				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
+				00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */,
+				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = EduLink;
+			productName = EduLink;
+			productReference = 13B07F961A680F5B00A75B9A /* EduLink.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		83CBB9F71A601CBA00E9B192 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1210;
+				TargetAttributes = {
+					00E356ED1AD99517003FC87E = {
+						CreatedOnToolsVersion = 6.2;
+						TestTargetID = 13B07F861A680F5B00A75B9A;
+					};
+					13B07F861A680F5B00A75B9A = {
+						LastSwiftMigration = 1120;
+					};
+				};
+			};
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "EduLink" */;
+			compatibilityVersion = "Xcode 12.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 83CBB9F61A601CBA00E9B192;
+			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				13B07F861A680F5B00A75B9A /* EduLink */,
+				00E356ED1AD99517003FC87E /* EduLinkTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		00E356EC1AD99517003FC87E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		13B07F8E1A680F5B00A75B9A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				449A96A6DD9E247A72036289 /* PrivacyInfo.xcprivacy in Resources */,
+				77A1AAFB25B543ECA2B72A99 /* SF-Pro-Display-Black.ttf in Resources */,
+				EE713BD8B09F44BDBE67A741 /* SF-Pro-Display-BlackItalic.ttf in Resources */,
+				7F9230A86D77424DA07E7DF8 /* SF-Pro-Display-Bold.ttf in Resources */,
+				E5B2C02ED36746EEA0A38A68 /* SF-Pro-Display-BoldItalic.ttf in Resources */,
+				F95020319E2B4980BA7F14CB /* SF-Pro-Display-Heavy.ttf in Resources */,
+				3B3F84DCB73B404A92BAF0EB /* SF-Pro-Display-HeavyItalic.ttf in Resources */,
+				BB1C3364A8C74A76A99895FD /* SF-Pro-Display-Light.ttf in Resources */,
+				B2E1C6B817EA415C989A7DBB /* SF-Pro-Display-LightItalic.ttf in Resources */,
+				381420EC5C4F4754A028A16B /* SF-Pro-Display-Medium.ttf in Resources */,
+				03B755474ED04C6289D15166 /* SF-Pro-Display-MediumItalic.ttf in Resources */,
+				7235A0E05A7C43048FD507E6 /* SF-Pro-Display-Regular.ttf in Resources */,
+				5F0D8E206C5647E58D039156 /* SF-Pro-Display-RegularItalic.ttf in Resources */,
+				CA68E37B88044624853666AD /* SF-Pro-Display-Semibold.ttf in Resources */,
+				B808872693914AF6A1CC087A /* SF-Pro-Display-SemiboldItalic.ttf in Resources */,
+				EF609EDEE8FB4E48A0BB3550 /* SF-Pro-Display-Thin.ttf in Resources */,
+				7053CC9B1EDC4FC59909B3F8 /* SF-Pro-Display-ThinItalic.ttf in Resources */,
+				D0D5D43EE02E4B4DA23B2AE5 /* SF-Pro-Display-Ultralight.ttf in Resources */,
+				33F3CAB91D7A4AFAA59C08AF /* SF-Pro-Display-UltralightItalic.ttf in Resources */,
+				ED7971D1DDC14A409EA9E163 /* SF-Pro-Text-Bold.ttf in Resources */,
+				769AF464311D4E8D80DC56E1 /* SF-Pro-Text-BoldItalic.ttf in Resources */,
+				AC9D2B62E10F42B79EC4FF35 /* SF-Pro-Text-Heavy.ttf in Resources */,
+				C6A3A2AA93DE420FB10CA4D2 /* SF-Pro-Text-HeavyItalic.ttf in Resources */,
+				9E647AF3DA084AABA48171E2 /* SF-Pro-Text-Light.ttf in Resources */,
+				6A03BF86A755496382C451DD /* SF-Pro-Text-LightItalic.ttf in Resources */,
+				4CF678480E4A4FA3A12C4D9A /* SF-Pro-Text-Medium.ttf in Resources */,
+				A6AD805C125B48388A7D9E7B /* SF-Pro-Text-MediumItalic.ttf in Resources */,
+				020E7BA10E194EDB96C68A26 /* SF-Pro-Text-Regular.ttf in Resources */,
+				056A017964FD4F3F9DC6104C /* SF-Pro-Text-RegularItalic.ttf in Resources */,
+				933D8C897A8A462EBFABD1DB /* SF-Pro-Text-Semibold.ttf in Resources */,
+				FA27350397ED4A63B1265A7A /* SF-Pro-Text-SemiboldItalic.ttf in Resources */,
+				75E708E5B1E942EE8536DC39 /* Vazir-Black-FD.ttf in Resources */,
+				C75194AE60214FD98D16136A /* Vazir-Bold-FD.ttf in Resources */,
+				F1302583C30D45F79477C4ED /* Vazir-FD.ttf in Resources */,
+				11376E701797450EB71AE2FD /* Vazir-Light-FD.ttf in Resources */,
+				FCBD0587CD334632BA153C4D /* Vazir-Medium-FD.ttf in Resources */,
+				3B91C4DDCB994CB383FF6BBE /* Vazir-Thin-FD.ttf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/.xcode.env.local",
+				"$(SRCROOT)/.xcode.env",
+			);
+			name = "Bundle React Native code and images";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"$REACT_NATIVE_PATH/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"$REACT_NATIVE_PATH/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
+		};
+		00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EduLink/Pods-EduLink-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EduLink/Pods-EduLink-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EduLink/Pods-EduLink-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A55EABD7B0C7F3A422A6CC61 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-EduLink-EduLinkTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-EduLink-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C59DA0FBD6956966B86A3779 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EduLink-EduLinkTests/Pods-EduLink-EduLinkTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EduLink-EduLinkTests/Pods-EduLink-EduLinkTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EduLink-EduLinkTests/Pods-EduLink-EduLinkTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E235C05ADACE081382539298 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EduLink/Pods-EduLink-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EduLink/Pods-EduLink-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EduLink/Pods-EduLink-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F6A41C54EA430FDDC6A6ED99 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EduLink-EduLinkTests/Pods-EduLink-EduLinkTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EduLink-EduLinkTests/Pods-EduLink-EduLinkTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EduLink-EduLinkTests/Pods-EduLink-EduLinkTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		00E356EA1AD99517003FC87E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00E356F31AD99517003FC87E /* EduLinkTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		13B07F871A680F5B00A75B9A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
+				13B07FC11A68108700A75B9A /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		00E356F51AD99517003FC87E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 13B07F861A680F5B00A75B9A /* EduLink */;
+			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		00E356F61AD99517003FC87E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5B7EB9410499542E8C5724F5 /* Pods-EduLink-EduLinkTests.debug.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = EduLinkTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-lc++",
+					"$(inherited)",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.tech42.edulink;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EduLink.app/EduLink";
+			};
+			name = Debug;
+		};
+		00E356F71AD99517003FC87E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 89C6BE57DB24E9ADA2F236DE /* Pods-EduLink-EduLinkTests.release.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COPY_PHASE_STRIP = NO;
+				INFOPLIST_FILE = EduLinkTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-lc++",
+					"$(inherited)",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.tech42.edulink;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EduLink.app/EduLink";
+			};
+			name = Release;
+		};
+		13B07F941A680F5B00A75B9A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3B4392A12AC88292D35C810B /* Pods-EduLink.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_BITCODE = NO;
+				INFOPLIST_FILE = EduLink/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = EduLink;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.tech42.edulink;
+				PRODUCT_NAME = EduLink;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		13B07F951A680F5B00A75B9A /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5709B34CF0A7D63546082F79 /* Pods-EduLink.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_FILE = EduLink/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = EduLink;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.tech42.edulink;
+				PRODUCT_NAME = EduLink;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+		83CBBA201A601CBA00E9B192 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					/usr/lib/swift,
+					"$(inherited)",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"\"$(SDKROOT)/usr/lib/swift\"",
+					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
+					"\"$(inherited)\"",
+				);
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-DFOLLY_NO_CONFIG",
+					"-DFOLLY_MOBILE=1",
+					"-DFOLLY_USE_LIBCPP=1",
+					"-DFOLLY_CFG_NO_COROUTINES=1",
+					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
+				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
+				USE_HERMES = true;
+			};
+			name = Debug;
+		};
+		83CBBA211A601CBA00E9B192 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					/usr/lib/swift,
+					"$(inherited)",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"\"$(SDKROOT)/usr/lib/swift\"",
+					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
+					"\"$(inherited)\"",
+				);
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-DFOLLY_NO_CONFIG",
+					"-DFOLLY_MOBILE=1",
+					"-DFOLLY_USE_LIBCPP=1",
+					"-DFOLLY_CFG_NO_COROUTINES=1",
+					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
+				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
+				SDKROOT = iphoneos;
+				USE_HERMES = true;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "EduLinkTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				00E356F61AD99517003FC87E /* Debug */,
+				00E356F71AD99517003FC87E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "EduLink" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				13B07F941A680F5B00A75B9A /* Debug */,
+				13B07F951A680F5B00A75B9A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "EduLink" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				83CBBA201A601CBA00E9B192 /* Debug */,
+				83CBBA211A601CBA00E9B192 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
+}
