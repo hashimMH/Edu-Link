@@ -114,7 +114,7 @@ const userController = {
     try {
       const { search, country, interest, available } = req.query;
 
-      let sql = `SELECT t.*, u.avatar_url, u.first_name || ' ' || u.last_name AS display_name
+      let sql = `SELECT t.*, u.avatar_url AS user_avatar_url, u.first_name || ' ' || u.last_name AS display_name
                  FROM tutors t JOIN users u ON t.user_id = u.id WHERE 1=1`;
       const params = [];
 
@@ -154,7 +154,7 @@ const userController = {
         video: t.video_url,
         introVideoUrl: t.intro_video_url,
         videoUrl: t.intro_video_url || t.video_url,
-        avatarUrl: t.avatar_url,
+        avatarUrl: t.user_avatar_url,
       }));
 
       res.json({ success: true, data: formatted });
@@ -169,7 +169,7 @@ const userController = {
   getTutorById(req, res, next) {
     try {
       const tutor = db.prepare(`
-        SELECT t.*, u.avatar_url, u.email, u.first_name || ' ' || u.last_name AS display_name
+        SELECT t.*, u.avatar_url AS user_avatar_url, u.email, u.first_name || ' ' || u.last_name AS display_name
         FROM tutors t JOIN users u ON t.user_id = u.id
         WHERE t.id = ?
       `).get(req.params.id);
@@ -208,7 +208,7 @@ const userController = {
           video: tutor.video_url,               // legacy
           introVideoUrl: tutor.intro_video_url,  // uploaded from dashboard
           videoUrl: tutor.intro_video_url || tutor.video_url,  // unified
-          avatarUrl: tutor.avatar_url,
+          avatarUrl: tutor.user_avatar_url,
           availability: availability.map((a) => ({
             id: a.id,
             dayOfWeek: a.day_of_week,
@@ -245,7 +245,7 @@ const userController = {
           id: t.id,
           userId: t.user_id,
           name: t.display_name || t.name,
-          avatarUrl: t.avatar_url,
+          avatarUrl: t.user_avatar_url,
         })),
       });
     } catch (err) {

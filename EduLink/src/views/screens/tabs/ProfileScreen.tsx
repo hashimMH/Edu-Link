@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useCallback} from 'react';
 import {
   View,
   Text,
@@ -6,15 +6,19 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import {CompositeNavigationProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {RootStackParamList, TabParamList} from '../../../models/types';
 import Background from '../components/Background';
 import {storage} from '../../../services/storage';
+import {api} from '../../../services/api';
+
+const API_HOST = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
 
 type ProfileScreenNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<TabParamList, 'Profile'>,
@@ -31,14 +35,24 @@ interface ProfileOption {
 const ProfileScreen = () => {
   const navigation = useNavigation<ProfileScreenNavigationProp>();
   const [userName, setUserName] = useState('');
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [subsEnabled, setSubsEnabled] = useState(true);
 
-  useEffect(() => {
-    storage.getUser().then(u => {
-      if (u) setUserName(`${u.firstName} ${u.lastName}`);
-    });
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      storage.getUser().then(u => {
+        if (u) {
+          setUserName(`${u.firstName} ${u.lastName}`);
+          setAvatarUrl(u.avatarUrl || null);
+        }
+      });
+      api.getSubscriptionStatus()
+        .then(s => setSubsEnabled(s.enabled))
+        .catch(() => {});
+    }, [])
+  );
 
-  const profileOptions: ProfileOption[] = [
+  const baseOptions: ProfileOption[] = [
     { 
       id: 'account', 
       title: 'Account', 
@@ -52,22 +66,16 @@ const ProfileScreen = () => {
       onPress: () => navigation.navigate('MessagesScreen')
     },
     { 
-      id: 'subscribe', 
-      title: 'Subscribe', 
-      icon: 'card-outline',
-      onPress: () => console.log('Subscribe pressed')
-    },
-    { 
       id: 'my-schedule', 
       title: 'My schedule', 
       icon: 'time-outline',
       onPress: () => navigation.navigate('MyScheduleScreen')
     },
     { 
-      id: 'extra-minutes', 
-      title: 'Extra Minutes', 
-      icon: 'time-outline',
-      onPress: () => console.log('Extra Minutes pressed')
+      id: 'recordings', 
+      title: 'Recordings', 
+      icon: 'videocam-outline',
+      onPress: () => navigation.navigate('RecordingsScreen')
     },
     { 
       id: 'lesson-history', 
@@ -79,26 +87,32 @@ const ProfileScreen = () => {
       id: 'saved-tutors', 
       title: 'Saved Tutors', 
       icon: 'bookmark-outline',
-      onPress: () => console.log('Saved Tutors pressed')
+      onPress: () => navigation.navigate('SavedTutorsScreen')
     },
     { 
-      id: 'referral', 
-      title: 'Referral code', 
-      icon: 'gift-outline',
-      onPress: () => console.log('Referral pressed')
+      id: 'privacy', 
+      title: 'Privacy Policy', 
+      icon: 'shield-checkmark-outline',
+      onPress: () => navigation.navigate('LegalScreen', { pageKey: 'privacy' })
     },
     { 
-      id: 'help', 
-      title: 'Help Center', 
-      icon: 'help-circle-outline',
-      onPress: () => console.log('Help pressed')
+      id: 'terms', 
+      title: 'Terms & Conditions', 
+      icon: 'document-text-outline',
+      onPress: () => navigation.navigate('LegalScreen', { pageKey: 'terms' })
     },
-    { 
-      id: 'invites', 
-      title: 'Invites Friends', 
-      icon: 'people-outline',
-      onPress: () => console.log('Invites pressed')
-    },
+    // { 
+    //   id: 'help', 
+    //   title: 'Help Center', 
+    //   icon: 'help-circle-outline',
+    //   onPress: () => console.log('Help pressed')
+    // },
+    // { 
+    //   id: 'invites', 
+    //   title: 'Invites Friends', 
+    //   icon: 'people-outline',
+    //   onPress: () => console.log('Invites pressed')
+    // },
     { 
       id: 'logout', 
       title: 'Log out', 
@@ -110,6 +124,34 @@ const ProfileScreen = () => {
     },
   ];
 
+  const subscriptionOptions: ProfileOption[] = subsEnabled ? [
+    { 
+      id: 'subscribe', 
+      title: 'Subscribe', 
+      icon: 'card-outline',
+      onPress: () => console.log('Subscribe pressed')
+    },
+    { 
+      id: 'extra-minutes', 
+      title: 'Extra Minutes', 
+      icon: 'time-outline',
+      onPress: () => console.log('Extra Minutes pressed')
+    },
+    { 
+      id: 'referral', 
+      title: 'Referral code', 
+      icon: 'gift-outline',
+      onPress: () => console.log('Referral pressed')
+    },
+  ] : [];
+
+  // Insert subscription options after Messages
+  const profileOptions = [
+    ...baseOptions.slice(0, 2),
+    ...subscriptionOptions,
+    ...baseOptions.slice(2),
+  ];
+
   return (
     <Background>
       <ScrollView style={styles.scrollView}>
@@ -117,10 +159,10 @@ const ProfileScreen = () => {
           <View style={styles.profileSection}>
             <View style={styles.profileImageContainer}>
               <Image
-                source={require('../../../../assets/profilepic.png')}
+                source={avatarUrl ? { uri: `${API_HOST}${avatarUrl}` } : require('../../../../assets/profilepic.png')}
                 style={styles.profileImage}
               />
-              <TouchableOpacity style={styles.editButton}>
+              <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('AccountScreen')}>
                 <Icon name="pencil" size={16} color="#fff" />
               </TouchableOpacity>
             </View>

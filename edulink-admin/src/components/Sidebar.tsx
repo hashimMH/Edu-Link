@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard, Users, GraduationCap, BookOpen, Calendar,
-  CreditCard, Bell, Package, LogOut, Menu, X,
+  CreditCard, Bell, Package, LogOut, Menu, X, Shield,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAdminSocket } from '@/components/SocketProvider';
@@ -17,6 +17,7 @@ const nav = [
   { href: '/dashboard/payments', label: 'Payments', icon: CreditCard },
   { href: '/dashboard/notifications', label: 'Notifications', icon: Bell, badge: true },
   { href: '/dashboard/subscriptions', label: 'Subscriptions', icon: Package },
+  { href: '/dashboard/legal', label: 'Legal Pages', icon: Shield },
 ];
 
 export default function Sidebar() {

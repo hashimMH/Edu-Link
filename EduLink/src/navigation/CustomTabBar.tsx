@@ -20,7 +20,7 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
         let iconName;
         if (route.name === 'Home') iconName = 'home';
         else if (route.name === 'Tutors') iconName = 'search';
-        else if (route.name === 'Record') iconName = 'mic';
+        else if (route.name === 'AIChat') iconName = 'chatbubbles';
         else if (route.name === 'Profile') iconName = 'person';
         else if (route.name === 'Scheduled') iconName = 'calendar';
         else if (route.name === 'Messages') iconName = 'chatbox';

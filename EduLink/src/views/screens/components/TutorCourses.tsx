@@ -1,10 +1,18 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, Image, TouchableOpacity, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import { TutorCourse } from '../../../models/types';
+
+const API_HOST = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+
+function getImageSource(avatarUrl: string | null | undefined) {
+  if (!avatarUrl) return require("../../../../assets/karim.png");
+  if (avatarUrl.startsWith('http')) return { uri: avatarUrl };
+  return { uri: `${API_HOST}${avatarUrl}` };
+}
 
 
 const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
@@ -34,7 +42,7 @@ const TutorCard: React.FC<{ tutor: TutorCourse }> = ({ tutor }) => {
       onPress={() => navigation.navigate('TutorInfoScreen', { tutor: tutor })}
     >
       <View style={styles.tutorInfo}>
-        <Image source={(tutor as any).avatarUrl ? {uri: (tutor as any).avatarUrl} : require("../../../../assets/karim.png")} style={styles.tutorImage} />
+        <Image source={getImageSource((tutor as any).avatarUrl)} style={styles.tutorImage} />
         {tutor.isAvailable !== undefined && (
           <View style={[styles.statusDot, tutor.isAvailable ? styles.statusOnline : styles.statusOffline]} />
         )}

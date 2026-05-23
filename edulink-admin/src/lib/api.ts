@@ -32,6 +32,7 @@ export const api = {
   // Admin
   getStats: () => request<any>('/admin/stats'),
   getUsers: (params?: string) => request<any>(`/admin/users${params ? `?${params}` : ''}`),
+  getUser: (id: string) => request<any>(`/admin/users/${id}`),
   createUser: (data: any) => request<any>('/admin/users', { method: 'POST', body: JSON.stringify(data) }),
   updateUser: (id: string, data: any) => request<any>(`/admin/users/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   deleteUser: (id: string) => request<any>(`/admin/users/${id}`, { method: 'DELETE' }),
@@ -40,6 +41,9 @@ export const api = {
   updateTutor: (id: string, data: any) => request<any>(`/admin/tutors/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
 
   getSubscriptions: () => request<any[]>('/admin/subscriptions'),
+  getSubscriptionsMaster: () => request<{ enabled: boolean }>('/admin/subscriptions-master'),
+  toggleSubscriptionsMaster: (enabled: boolean) =>
+    request<{ enabled: boolean }>('/admin/subscriptions-master', { method: 'PUT', body: JSON.stringify({ enabled }) }),
   createSubscription: (data: any) => request<any>('/admin/subscriptions', { method: 'POST', body: JSON.stringify(data) }),
   updateSubscription: (id: string, data: any) => request<any>(`/admin/subscriptions/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   deleteSubscription: (id: string) => request<any>(`/admin/subscriptions/${id}`, { method: 'DELETE' }),
@@ -51,4 +55,6 @@ export const api = {
 
   getAppointments: () => request<any[]>('/admin/appointments'),
   getPayments: () => request<any[]>('/admin/payments'),
+  getLegalPages: () => request<any[]>('/admin/legal'),
+  updateLegalPage: (key: string, data: any) => request(`/admin/legal/${key}`, { method: 'PUT', body: JSON.stringify(data) }),
 };

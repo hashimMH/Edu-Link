@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState, useRef } from 'react';
 import { api } from '@/lib/api';
-import { Save, User, Video, Upload, Trash2, Plus, Award, Briefcase } from 'lucide-react';
+import { Save, User, Video, Upload, Trash2, Plus, Award, Briefcase, Camera } from 'lucide-react';
 
 const INTERESTS_LIST = ['Arabic', 'English', 'Mathematics', 'Science', 'Programming', 'Business', 'Vocabulary', 'Reading', 'Writing', 'Grammar'];
 
@@ -23,6 +23,9 @@ export default function ProfilePage() {
   const [description, setDescription] = useState('');
   const [interests, setInterests] = useState<string[]>([]);
   const [videoUrl, setVideoUrl] = useState('');
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const avatarRef = useRef<HTMLInputElement>(null);
 
   const videoRef = useRef<HTMLInputElement>(null);
   const certRef = useRef<HTMLInputElement>(null);
@@ -33,6 +36,7 @@ export default function ProfilePage() {
         const p = await api.getProfile();
         setProfile(p);
         setForm({ firstName: p.firstName, lastName: p.lastName, email: p.email, password: '', country: p.country || '' });
+        setAvatarUrl(p.avatarUrl || null);
 
         const tutors = await api.getTutors();
         const myTutor = tutors.find((t: any) => t.userId === p.id) || tutors[0];
@@ -100,6 +104,30 @@ export default function ProfilePage() {
     finally { setSaving(false); }
   };
 
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const fd = new FormData();
+    fd.append('avatar', file);
+    setAvatarUploading(true);
+    try {
+      const token = localStorage.getItem('teacher_token');
+      const res = await fetch('/api/users/avatar', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + token },
+        body: fd,
+      });
+      const data = await res.json();
+      if (data.success) {
+        setAvatarUrl(data.data.avatarUrl);
+        setMsg('Profile picture updated!');
+      } else {
+        setMsg(data.message || 'Upload failed');
+      }
+    } catch (err: any) { setMsg(err.message); }
+    finally { setAvatarUploading(false); }
+  };
+
   const handleCertUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -134,6 +162,33 @@ export default function ProfilePage() {
         {/* Personal Info */}
         <div className="bg-white rounded-xl shadow-sm border p-6">
           <div className="flex items-center gap-2 mb-4"><User size={20} className="text-primary" /><h3 className="text-lg font-semibold">Personal Information</h3></div>
+          
+          {/* Avatar upload */}
+          <div className="flex items-center gap-4 mb-6 pb-6 border-b">
+            <div className="relative group cursor-pointer" onClick={() => avatarRef.current?.click()}>
+              <div className="w-20 h-20 rounded-full bg-gray-200 overflow-hidden flex items-center justify-center">
+                {avatarUrl ? (
+                  <img src={`http://localhost:3000${avatarUrl}`} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <User size={32} className="text-gray-400" />
+                )}
+              </div>
+              <div className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <Camera size={20} className="text-white" />
+              </div>
+              {avatarUploading && (
+                <div className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center">
+                  <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                </div>
+              )}
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-900">Profile Picture</p>
+              <p className="text-xs text-gray-500 mt-0.5">Click to upload a new photo</p>
+            </div>
+            <input ref={avatarRef} type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" />
+          </div>
+
           <form onSubmit={savePersonal} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div><label className="block text-sm font-medium text-gray-600 mb-1">First Name</label>

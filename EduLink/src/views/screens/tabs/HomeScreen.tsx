@@ -41,6 +41,7 @@ type HomeScreenNavigationProp = CompositeNavigationProp<
 const HomeScreen = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
   const dispatch = useDispatch();
   const [subscriptions, setSubscriptions] = useState<SubscriptionItem[]>([]);
+  const [subscriptionsEnabled, setSubscriptionsEnabled] = useState(true);
   const [tutors, setTutors] = useState<Tutor[]>([]);
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState<number>(0);
@@ -54,11 +55,13 @@ const HomeScreen = ({ navigation }: { navigation: HomeScreenNavigationProp }) =>
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [subscriptionsData, tutorsData] = await Promise.all([
+        const [subscriptionsData, tutorsData, statusData] = await Promise.all([
           api.getSubscriptions(),
           api.getTutors(),
+          api.getSubscriptionStatus().catch(() => ({ enabled: true })),
         ]);
         setSubscriptions(subscriptionsData);
+        setSubscriptionsEnabled(statusData.enabled);
         setTutors(tutorsData);
         dispatch(storeTutors(tutorsData));
 
@@ -147,6 +150,8 @@ const HomeScreen = ({ navigation }: { navigation: HomeScreenNavigationProp }) =>
       </HomeUperView>
       <ScrollView>
         <View style={[{ paddingTop: '20%' }]}>
+          {subscriptionsEnabled && subscriptions.length > 0 && (
+          <>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>subscriptions</Text>
             <TouchableOpacity>
@@ -161,6 +166,8 @@ const HomeScreen = ({ navigation }: { navigation: HomeScreenNavigationProp }) =>
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.subscriptionContainer}
           />
+          </>
+          )}
           <View style={styles.section}>
             <View style={[styles.sectionHeader, { paddingHorizontal: 4 }]}>
               <Text style={styles.sectionTitle}>Courses by Tutors</Text>

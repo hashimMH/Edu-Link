@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform, Alert,
 } from 'react-native';
@@ -18,6 +18,14 @@ type Props = {
 const TutorInfoScreen: React.FC<Props> = ({route, navigation}) => {
   const {tutor} = route.params;
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    api.checkTutorSaved(tutor.id)
+      .then(r => setIsSaved(r.saved))
+      .catch(() => {});
+  }, [tutor.id]);
 
   const handleChatPress = async () => {
     try {
@@ -40,7 +48,35 @@ const TutorInfoScreen: React.FC<Props> = ({route, navigation}) => {
     }
   };
 
+  const handleToggleSave = async () => {
+    if (saving) return;
+    setSaving(true);
+    try {
+      if (isSaved) {
+        await api.unsaveTutor(tutor.id);
+        setIsSaved(false);
+      } else {
+        await api.saveTutor(tutor.id);
+        setIsSaved(true);
+      }
+    } catch (err: any) {
+      Alert.alert('Error', err.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const insets = useSafeAreaInsets();
+
+  const getVideoUri = () => {
+    const rawUrl = (tutor as any).videoUrl || (tutor as any).introVideoUrl || tutor.video || '';
+    if (!rawUrl) return '';
+    // If it's already a full URL (http/https), use as-is
+    if (rawUrl.startsWith('http://') || rawUrl.startsWith('https://')) return rawUrl;
+    // Prepend API host for relative paths like /uploads/videos/...
+    const API_HOST = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+    return `${API_HOST}${rawUrl}`;
+  };
 
   const togglePlayPause = () => {
     setIsPlaying(!isPlaying);
@@ -53,9 +89,14 @@ const TutorInfoScreen: React.FC<Props> = ({route, navigation}) => {
           <Icon name="chevron-back" size={24} color="#1F2A37" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{tutor.name}</Text>
-        <TouchableOpacity style={styles.messageButton} onPress={handleChatPress}>
-          <Icon name="chatbubble-ellipses" size={24} color="#10A7DA" />
-        </TouchableOpacity>
+        <View style={{flexDirection: 'row', gap: 8}}>
+          <TouchableOpacity onPress={handleToggleSave} style={styles.messageButton}>
+            <Icon name={isSaved ? 'bookmark' : 'bookmark-outline'} size={24} color="#10A7DA" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.messageButton} onPress={handleChatPress}>
+            <Icon name="chatbubble-ellipses" size={24} color="#10A7DA" />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <ScrollView
@@ -63,7 +104,7 @@ const TutorInfoScreen: React.FC<Props> = ({route, navigation}) => {
         contentContainerStyle={{paddingTop: Platform.OS === 'ios' ? insets.top > 0 ? 10 : 0 : 0}}>
         <TouchableOpacity onPress={togglePlayPause} style={styles.videoContainer}>
           <Video
-            source={{uri: (tutor as any).videoUrl || (tutor as any).introVideoUrl || tutor.video || ''}}
+            source={{uri: getVideoUri() || undefined}}
             style={styles.tutorImage}
             resizeMode="cover"
             repeat

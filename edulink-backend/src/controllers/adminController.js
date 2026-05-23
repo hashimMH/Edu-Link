@@ -51,7 +51,7 @@ const adminController = {
     try {
       const { role, search, page = 1, limit = 20 } = req.query;
       const offset = (parseInt(page) - 1) * parseInt(limit);
-      let sql = 'SELECT id, first_name, last_name, email, role, is_active, country, created_at FROM users WHERE 1=1';
+      let sql = 'SELECT id, first_name, last_name, email, role, is_active, country, interests, avatar_url, created_at FROM users WHERE 1=1';
       const params = [];
 
       if (role) { sql += ' AND role = ?'; params.push(role); }
@@ -78,6 +78,38 @@ const adminController = {
           total: total.total,
           page: parseInt(page),
           pages: Math.ceil(total.total / parseInt(limit)),
+        },
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  getUserById(req, res, next) {
+    try {
+      const user = db.prepare(`
+        SELECT id, first_name, last_name, email, role, is_active, country,
+               interests, avatar_url, created_at, updated_at
+        FROM users WHERE id = ?
+      `).get(req.params.id);
+
+      if (!user) throw ApiError.notFound('User not found');
+
+      // Get stats
+      const apptCount = db.prepare('SELECT COUNT(*) AS count FROM appointments WHERE student_id = ?').get(user.id);
+      const lessonCount = db.prepare('SELECT COUNT(*) AS count FROM lessons WHERE user_id = ?').get(user.id);
+      const reviewCount = db.prepare('SELECT COUNT(*) AS count FROM reviews WHERE student_id = ?').get(user.id);
+
+      res.json({
+        success: true,
+        data: {
+          ...user,
+          interests: JSON.parse(user.interests || '[]'),
+          stats: {
+            appointments: apptCount.count,
+            lessons: lessonCount.count,
+            reviews: reviewCount.count,
+          },
         },
       });
     } catch (err) {
@@ -276,6 +308,25 @@ const adminController = {
     } catch (err) { next(err); }
   },
 
+  // ── Global subscriptions master switch ────────────────────────────
+  getSubscriptionsMasterSwitch(req, res, next) {
+    try {
+      const row = db.prepare("SELECT value FROM system_settings WHERE key = 'subscriptions_enabled'").get();
+      res.json({ success: true, data: { enabled: row?.value === 'true' } });
+    } catch (err) { next(err); }
+  },
+
+  toggleSubscriptionsMasterSwitch(req, res, next) {
+    try {
+      const { enabled } = req.body;
+      if (typeof enabled !== 'boolean') throw ApiError.badRequest('enabled (boolean) is required');
+      db.prepare(
+        "INSERT INTO system_settings (key, value, updated_at) VALUES ('subscriptions_enabled', ?, datetime('now')) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at"
+      ).run(enabled ? 'true' : 'false');
+      res.json({ success: true, data: { enabled } });
+    } catch (err) { next(err); }
+  },
+
   // ── Lessons CRUD ───────────────────────────────────────────────────
   getAllLessonsAdmin(req, res, next) {
     try {
@@ -410,6 +461,35 @@ const adminController = {
       });
 
       res.json({ success: true, message: 'Notification sent' });
+    } catch (err) { next(err); }
+  },
+
+  // ── Legal Pages ──────────────────────────────────────────────────
+  getLegalPages(req, res, next) {
+    try {
+      const pages = db.prepare('SELECT * FROM legal_pages').all();
+      res.json({ success: true, data: pages });
+    } catch (err) { next(err); }
+  },
+
+  updateLegalPage(req, res, next) {
+    try {
+      const { key } = req.params;
+      const { title, content } = req.body;
+      if (!title && !content) throw ApiError.badRequest('No fields to update');
+
+      const page = db.prepare('SELECT key FROM legal_pages WHERE key = ?').get(key);
+      if (!page) throw ApiError.notFound('Legal page not found');
+
+      const updates = [];
+      const params = [];
+      if (title) { updates.push('title = ?'); params.push(title); }
+      if (content !== undefined) { updates.push('content = ?'); params.push(content); }
+      updates.push("updated_at = datetime('now')");
+
+      params.push(key);
+      db.prepare(`UPDATE legal_pages SET ${updates.join(', ')} WHERE key = ?`).run(...params);
+      res.json({ success: true });
     } catch (err) { next(err); }
   },
 };

@@ -24,6 +24,10 @@ import AllPaymentsScreen from '../views/screens/teacher/AllPaymentsScreen';
 // Lazy-load LiveClassScreen so LiveKit native modules only initialize
 // when the user actually enters a class — avoids audioRecordSamplesDispatcher crash at startup
 const LiveClassScreen = React.lazy(() => import('../views/screens/stacks/LiveClassScreen'));
+import RecordingsScreen from '../views/screens/stacks/RecordingsScreen';
+import RecordingDetailScreen from '../views/screens/stacks/RecordingDetailScreen';
+import SavedTutorsScreen from '../views/screens/stacks/SavedTutorsScreen';
+import LegalScreen from '../views/screens/stacks/LegalScreen';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -55,6 +59,10 @@ const StackNavigator = ({initialRoute = 'LoginScreen'}: {initialRoute?: string})
           </Suspense>
         )}
       </Stack.Screen>
+      <Stack.Screen name="RecordingsScreen" component={RecordingsScreen} options={{headerShown: false}} />
+      <Stack.Screen name="RecordingDetailScreen" component={RecordingDetailScreen} options={{headerShown: false}} />
+      <Stack.Screen name="SavedTutorsScreen" component={SavedTutorsScreen} options={{headerShown: false}} />
+      <Stack.Screen name="LegalScreen" component={LegalScreen} options={{headerShown: false}} />
     </Stack.Navigator>
   );
 };

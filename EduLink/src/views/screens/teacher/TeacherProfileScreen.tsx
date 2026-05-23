@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useCallback} from 'react';
 import {
   View,
   Text,
@@ -6,15 +6,18 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import {CompositeNavigationProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {RootStackParamList, TabParamList} from '../../../models/types';
 import Background from '../components/Background';
 import {storage} from '../../../services/storage';
+
+const API_HOST = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
 
 type ProfileScreenNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<TabParamList, 'Profile'>,
@@ -31,12 +34,18 @@ interface ProfileOption {
 const TeacherProfileScreen = () => {
   const navigation = useNavigation<ProfileScreenNavigationProp>();
   const [userName, setUserName] = useState('');
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
-  useEffect(() => {
-    storage.getUser().then(u => {
-      if (u) setUserName(`${u.firstName} ${u.lastName}`);
-    });
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      storage.getUser().then(u => {
+        if (u) {
+          setUserName(`${u.firstName} ${u.lastName}`);
+          setAvatarUrl(u.avatarUrl || null);
+        }
+      });
+    }, [])
+  );
 
   const profileOptions: ProfileOption[] = [
     { 
@@ -93,10 +102,10 @@ const TeacherProfileScreen = () => {
           <View style={styles.profileSection}>
             <View style={styles.profileImageContainer}>
               <Image
-                source={require('../../../../assets/profilepic.png')}
+                source={avatarUrl ? { uri: `${API_HOST}${avatarUrl}` } : require('../../../../assets/profilepic.png')}
                 style={styles.profileImage}
               />
-              <TouchableOpacity style={styles.editButton}>
+              <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('TeacherAccountScreen')}>
                 <Icon name="pencil" size={16} color="#fff" />
               </TouchableOpacity>
             </View>

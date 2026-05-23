@@ -1,9 +1,11 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
+import { useRouter } from 'next/navigation';
 import { Search, Plus, Trash2, Edit3, X } from 'lucide-react';
 
 export default function UsersPage() {
+  const router = useRouter();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -80,6 +82,7 @@ export default function UsersPage() {
               <th className="text-left py-3 px-4 font-medium text-gray-500">Name</th>
               <th className="text-left py-3 px-4 font-medium text-gray-500">Email</th>
               <th className="text-left py-3 px-4 font-medium text-gray-500">Role</th>
+              <th className="text-left py-3 px-4 font-medium text-gray-500 hidden lg:table-cell">Interests</th>
               <th className="text-left py-3 px-4 font-medium text-gray-500">Status</th>
               <th className="text-right py-3 px-4 font-medium text-gray-500">Actions</th>
             </tr>
@@ -87,9 +90,26 @@ export default function UsersPage() {
           <tbody>
             {data?.users?.map((u: any) => (
               <tr key={u.id} className="border-t border-gray-50 hover:bg-gray-50">
-                <td className="py-3 px-4 font-medium">{u.first_name} {u.last_name}</td>
+                <td className="py-3 px-4 font-medium">
+                  <button onClick={() => router.push(`/dashboard/users/${u.id}`)} className="text-primary hover:underline text-left">
+                    {u.first_name} {u.last_name}
+                  </button>
+                </td>
                 <td className="py-3 px-4 text-gray-500">{u.email}</td>
                 <td className="py-3 px-4"><span className={`px-2 py-1 rounded-full text-xs font-medium ${u.role === 'teacher' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>{u.role}</span></td>
+                <td className="py-3 px-4 hidden lg:table-cell">
+                  <div className="flex flex-wrap gap-1">
+                    {(u.interests || []).slice(0, 3).map((i: string) => (
+                      <span key={i} className="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded text-xs">{i}</span>
+                    ))}
+                    {(u.interests || []).length > 3 && (
+                      <span className="text-xs text-gray-400">+{u.interests.length - 3}</span>
+                    )}
+                    {(!u.interests || u.interests.length === 0) && (
+                      <span className="text-xs text-gray-400">—</span>
+                    )}
+                  </div>
+                </td>
                 <td className="py-3 px-4"><span className={`px-2 py-1 rounded-full text-xs ${u.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>{u.is_active ? 'Active' : 'Inactive'}</span></td>
                 <td className="py-3 px-4 text-right">
                   <button onClick={() => openEdit(u)} className="p-1 hover:bg-gray-100 rounded mr-1"><Edit3 size={16} className="text-blue-500" /></button>

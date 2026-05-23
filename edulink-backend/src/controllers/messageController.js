@@ -115,13 +115,14 @@ const messageController = {
         VALUES (?, ?, ?, ?, ?)
       `).run(msgId, req.user.id, receiverId, chatId, text);
 
-      // Auto-create notification for receiver with sender name
+      // Auto-create notification for receiver with sender name and ID
       const sender = db.prepare('SELECT first_name, last_name FROM users WHERE id = ?').get(req.user.id);
       const senderName = `${sender.first_name} ${sender.last_name}`;
+      const notifBody = JSON.stringify({ text: text.substring(0, 200), chatId, senderName, senderId: req.user.id });
       db.prepare(`
         INSERT INTO notifications (id, user_id, type, title, body)
         VALUES (?, ?, 'message', ?, ?)
-      `).run(uuidv4(), receiverId, `Message from ${senderName}`, JSON.stringify({ text: text.substring(0, 200), chatId, senderName }));
+      `).run(uuidv4(), receiverId, `Message from ${senderName}`, notifBody);
 
       // Real-time: emit to receiver
       emitToUser(receiverId, 'new_message', {

@@ -172,6 +172,22 @@ export interface AuthResponse {
 // HTTP client
 // ---------------------------------------------------------------------------
 
+// Auth expiry event emitter — any screen can listen to force logout
+type AuthListener = () => void;
+const authListeners: AuthListener[] = [];
+
+export function onAuthExpired(listener: AuthListener) {
+  authListeners.push(listener);
+  return () => {
+    const idx = authListeners.indexOf(listener);
+    if (idx >= 0) authListeners.splice(idx, 1);
+  };
+}
+
+function emitAuthExpired() {
+  authListeners.forEach(fn => fn());
+}
+
 async function request<T>(
   path: string,
   options: RequestInit = {},
@@ -191,6 +207,13 @@ async function request<T>(
     ...options,
     headers,
   });
+
+  // Token expired or invalid — clear session and force logout
+  if (res.status === 401) {
+    await storage.clear();
+    emitAuthExpired();
+    throw new Error('Session expired. Please login again.');
+  }
 
   const json = await res.json();
 
@@ -266,6 +289,29 @@ export const api = {
       body: JSON.stringify(data),
     }),
 
+  uploadAvatar: async (imageUri: string): Promise<{ avatarUrl: string }> => {
+    const token = await storage.getToken();
+    const formData = new FormData();
+    formData.append('avatar', {
+      uri: imageUri,
+      type: 'image/jpeg',
+      name: 'avatar.jpg',
+    } as any);
+    const res = await fetch(`${BASE_URL}/users/avatar`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+      body: formData,
+    });
+    const json = await res.json();
+    if (!res.ok || json.success === false) {
+      throw new Error(json.message || 'Upload failed');
+    }
+    return json.data;
+  },
+
   // ── Tutors ──────────────────────────────────────────────────────────
   getTutors: (filters?: {
     search?: string;
@@ -287,6 +333,9 @@ export const api = {
   // ── Subscriptions ───────────────────────────────────────────────────
   getSubscriptions: (): Promise<SubscriptionItem[]> =>
     request('/subscriptions'),
+
+  getSubscriptionStatus: (): Promise<{ enabled: boolean }> =>
+    request('/subscriptions/status'),
 
   getMySubscriptions: () => request('/subscriptions/my'),
 
@@ -332,6 +381,39 @@ export const api = {
 
   getPayments: (): Promise<Payment[]> =>
     request('/payments'),
+
+  // ── Recordings ──────────────────────────────────────────────────────
+  getRecordings: (): Promise<any[]> =>
+    request('/recordings'),
+
+  getRecording: (id: string): Promise<any> =>
+    request(`/recordings/${id}`),
+
+  saveRecordingNotes: (id: string, notes: string) =>
+    request(`/recordings/${id}/notes`, {
+      method: 'PUT',
+      body: JSON.stringify({ notes }),
+    }),
+
+  deleteRecording: (id: string) =>
+    request(`/recordings/${id}`, { method: 'DELETE' }),
+
+  // ── Saved Tutors ─────────────────────────────────────────────────────
+  getSavedTutors: (): Promise<any[]> =>
+    request('/saved-tutors'),
+
+  saveTutor: (tutorId: string) =>
+    request(`/saved-tutors/${tutorId}`, { method: 'POST' }),
+
+  unsaveTutor: (tutorId: string) =>
+    request(`/saved-tutors/${tutorId}`, { method: 'DELETE' }),
+
+  checkTutorSaved: (tutorId: string): Promise<{ saved: boolean }> =>
+    request(`/saved-tutors/${tutorId}/status`),
+
+  // ── Legal ───────────────────────────────────────────────────────────
+  getLegalPage: (key: string): Promise<{ title: string; content: string; updated_at: string }> =>
+    request(`/legal/${key}`),
 
   // ── Notifications ───────────────────────────────────────────────────
   getNotifications: (): Promise<NotificationItem[]> =>

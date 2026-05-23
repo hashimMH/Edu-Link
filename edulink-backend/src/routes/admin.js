@@ -19,6 +19,7 @@ router.get('/stats', ctrl.getStats);
 
 // Users
 router.get('/users', ctrl.getAllUsers);
+router.get('/users/:id', ctrl.getUserById);
 router.post('/users', ctrl.createUser);
 router.put('/users/:id', ctrl.updateUser);
 router.delete('/users/:id', ctrl.deleteUser);
@@ -32,6 +33,10 @@ router.get('/subscriptions', ctrl.getAllSubscriptionsAdmin);
 router.post('/subscriptions', ctrl.createSubscription);
 router.put('/subscriptions/:id', ctrl.updateSubscription);
 router.delete('/subscriptions/:id', ctrl.deleteSubscription);
+
+// Global subscriptions master switch
+router.get('/subscriptions-master', ctrl.getSubscriptionsMasterSwitch);
+router.put('/subscriptions-master', ctrl.toggleSubscriptionsMasterSwitch);
 
 // Lessons
 router.get('/lessons', ctrl.getAllLessonsAdmin);
@@ -48,5 +53,9 @@ router.get('/payments', ctrl.getAllPaymentsAdmin);
 // Notifications
 router.post('/notifications/broadcast', ctrl.broadcastNotification);
 router.post('/notifications/user/:userId', ctrl.sendUserNotification);
+
+// Legal pages
+router.get('/legal', ctrl.getLegalPages);
+router.put('/legal/:key', ctrl.updateLegalPage);
 
 module.exports = router;

@@ -1,15 +1,16 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Image, Alert, ActivityIndicator} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Image, Alert, ActivityIndicator, Platform} from 'react-native';
 import Background from '../components/Background_Auth';
 import TextComponent from '../components/TextComponent';
 import TextInputField from '../components/TextInputField';
 import GoogleButton from '../components/GoogleButton';
-import FacebookButton from '../components/FacebookButton';
+import AppleButton from '../components/AppleButton';
 import styles from '../styles/AuthStyle';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '../../../models/types';
 import {api} from '../../../services/api';
 import {storage} from '../../../services/storage';
+import {signInWithGoogle, signInWithApple} from '../../../services/firebaseAuth';
 
 type LoginScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -40,6 +41,31 @@ const LoginScreen = ({navigation}: {navigation: LoginScreenNavigationProp}) => {
       }
     } catch (err: any) {
       Alert.alert('Login Failed', err.message || 'Something went wrong');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSocialAuth = async () => {
+    setLoading(true);
+    try {
+      let data;
+      if (Platform.OS === 'ios') {
+        data = await signInWithApple();
+      } else {
+        data = await signInWithGoogle();
+      }
+      if (data.user.role === 'teacher') {
+        navigation.reset({index: 0, routes: [{name: 'TeacherTabs'}]});
+      } else {
+        navigation.reset({index: 0, routes: [{name: 'Tabs'}]});
+      }
+    } catch (err: any) {
+      if (err.message?.includes('not available') || err.message?.includes('not configured')) {
+        Alert.alert('Not Configured', err.message);
+      } else if (err.code !== 'CANCELLED') {
+        Alert.alert('Sign In Failed', err.message || 'Could not sign in');
+      }
     } finally {
       setLoading(false);
     }
@@ -90,8 +116,11 @@ const LoginScreen = ({navigation}: {navigation: LoginScreenNavigationProp}) => {
           </View>
 
           <View style={styles.btn_view}>
-            <GoogleButton onPress={() => console.log('google Auth')} />
-            <FacebookButton onPress={() => console.log('facebook Auth')} />
+            {Platform.OS === 'ios' ? (
+              <AppleButton onPress={handleSocialAuth} />
+            ) : (
+              <GoogleButton onPress={handleSocialAuth} />
+            )}
           </View>
           <View style={styles.footer}>
             <Text style={styles.footerText}>Don't have an Account? </Text>

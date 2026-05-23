@@ -3,7 +3,7 @@ import { TabParamList } from '../models/types';
 import { Platform } from 'react-native';
 import HomeScreen from '../views/screens/tabs/HomeScreen';
 import ProfileScreen from '../views/screens/tabs/ProfileScreen';
-import RecordScreen from '../views/screens/tabs/RecordScreen';
+import AIChatScreen from '../views/screens/tabs/AIChatScreen';
 import TutorScreen from '../views/screens/tabs/TutorScreen';
 import CustomTabBar from './CustomTabBar';
 
@@ -38,7 +38,7 @@ const TabNavigator = () => {
           headerShadowVisible: false,
         }}
       />
-      <Tab.Screen name="Record" component={RecordScreen} />
+      <Tab.Screen name="AIChat" component={AIChatScreen} options={{headerShown: false}} />
       <Tab.Screen 
         name="Profile" 
         component={ProfileScreen}

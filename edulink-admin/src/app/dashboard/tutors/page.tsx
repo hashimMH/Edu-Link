@@ -7,7 +7,11 @@ export default function TutorsPage() {
   const [tutors, setTutors] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<any>(null);
-  const [form, setForm] = useState({ name: '', accent: '', country: '', description: '', videoUrl: '', isAvailable: true, rating: 0, interests: '' });
+  const [form, setForm] = useState({
+    name: '', accent: '', country: '', description: '', videoUrl: '',
+    isAvailable: true, rating: 0, interests: '',
+    bio: '', experienceYears: '',
+  });
 
   const load = () => api.getTutors().then(setTutors).finally(() => setLoading(false));
   useEffect(() => { load(); }, []);

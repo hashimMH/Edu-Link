@@ -9,7 +9,8 @@ const ApiError = require('../utils/ApiError');
 const uploadsDir = path.resolve(__dirname, '../../uploads');
 const videosDir = path.join(uploadsDir, 'videos');
 const certsDir = path.join(uploadsDir, 'certificates');
-[videosDir, certsDir].forEach(d => { if (!fs.existsSync(d)) fs.mkdirSync(d, { recursive: true }); });
+const avatarsDir = path.join(uploadsDir, 'avatars');
+[videosDir, certsDir, avatarsDir].forEach(d => { if (!fs.existsSync(d)) fs.mkdirSync(d, { recursive: true }); });
 
 // Serve uploaded files statically
 function serveUploads(app) {
@@ -56,6 +57,25 @@ const certUpload = multer({
     else cb(new Error('Only images and PDFs allowed'));
   },
 }).single('certificate');
+
+// Multer config for avatars
+const avatarStorage = multer.diskStorage({
+  destination: avatarsDir,
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, `avatar_${req.user.id}_${Date.now()}${ext}`);
+  },
+});
+
+const avatarUpload = multer({
+  storage: avatarStorage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  fileFilter: (req, file, cb) => {
+    const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    if (allowed.includes(file.mimetype)) cb(null, true);
+    else cb(new Error('Only JPEG, PNG, WebP, and GIF images allowed'));
+  },
+}).single('avatar');
 
 const uploadController = {
   /**
@@ -175,6 +195,34 @@ const uploadController = {
     } catch (err) {
       next(err);
     }
+  },
+
+  /**
+   * POST /api/users/avatar
+   * Upload user profile picture (student or teacher)
+   */
+  uploadAvatar(req, res, next) {
+    avatarUpload(req, res, async (err) => {
+      if (err) {
+        if (err instanceof multer.MulterError) return next(ApiError.badRequest(err.message));
+        return next(ApiError.badRequest(err.message));
+      }
+      if (!req.file) return next(ApiError.badRequest('No image file provided'));
+
+      const url = `/uploads/avatars/${req.file.filename}`;
+
+      // Delete old avatar if exists
+      const current = db.prepare('SELECT avatar_url FROM users WHERE id = ?').get(req.user.id);
+      if (current?.avatar_url && current.avatar_url.startsWith('/uploads/avatars/')) {
+        const oldPath = path.join(uploadsDir, current.avatar_url);
+        if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+      }
+
+      db.prepare("UPDATE users SET avatar_url = ?, updated_at = datetime('now') WHERE id = ?")
+        .run(url, req.user.id);
+
+      res.json({ success: true, data: { avatarUrl: url } });
+    });
   },
 };
 

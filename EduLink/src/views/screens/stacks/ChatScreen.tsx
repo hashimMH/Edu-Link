@@ -20,7 +20,8 @@ interface Message {
 const ChatScreen = () => {
   const navigation = useNavigation();
   const route = useRoute<RouteProp<RootStackParamList, 'ChatScreen'>>();
-  const {userId, name: recipientName, chatId} = route.params;
+  const {userId: routeUserId, name: recipientName, chatId} = route.params;
+  const [receiverId, setReceiverId] = useState(routeUserId);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
@@ -28,12 +29,24 @@ const ChatScreen = () => {
   const chatIdRef = useRef(chatId);
   const shouldConnectRef = useRef(false);
 
-  // Load initial messages
+  // Load initial messages and derive receiverId if missing
   useEffect(() => {
     api.getChatMessages(chatId).then(data => {
       setMessages(data);
       setLoading(false);
       shouldConnectRef.current = true;
+
+      // If userId is empty, derive it from the messages
+      if (!receiverId && data.length > 0) {
+        const firstOther = data.find((m: any) => m.sender !== 'You');
+        if (firstOther) {
+          // We need userId — fetch conversation list
+          api.getMessages().then((convs: any[]) => {
+            const conv = convs.find((c: any) => c.chatId === chatId);
+            if (conv) setReceiverId(conv.id); // conv.id is the other user's id
+          }).catch(() => {});
+        }
+      }
     }).catch(err => {
       console.error('Failed to load messages:', err);
       setLoading(false);
@@ -86,7 +99,7 @@ const ChatScreen = () => {
     const text = newMessage.trim();
     setNewMessage('');
     try {
-      const msg = await api.sendMessage(userId, text);
+      const msg = await api.sendMessage(receiverId, text);
       setMessages(prev => [...prev, msg]);
       setTimeout(() => flatListRef.current?.scrollToEnd({animated: true}), 100);
     } catch (err: any) {

@@ -65,10 +65,10 @@ const NotificationScreen = () => {
       const extra = (item as any).chatId ? item : parseBody(item);
       const chatId = (extra as any).chatId;
       const senderName = (extra as any).senderName || item.title.replace('Message from ', '');
+      const senderId = (extra as any).senderId || '';
       if (chatId) {
-        // Need to find the sender's userId — use tutor list
         navigation.navigate('ChatScreen', {
-          userId: '', // will be filled from conversation
+          userId: senderId,
           name: senderName,
           chatId,
         });

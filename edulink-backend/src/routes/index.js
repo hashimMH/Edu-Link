@@ -10,6 +10,10 @@ router.use('/payments', require('./payments'));
 router.use('/notifications', require('./notifications'));
 router.use('/reviews', require('./reviews'));
 router.use('/teacher', require('./teacher'));
+router.use('/recordings', require('./recordings'));
+router.use('/chatbot', require('./chatbot'));
+router.use('/saved-tutors', require('./savedTutors'));
+router.use('/legal', require('./legal'));
 router.use('/admin', require('./admin'));
 router.use('/livekit', require('./livekit'));
 

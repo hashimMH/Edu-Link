@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "746674100825",
+    "project_id": "edulink-c7b45",
+    "storage_bucket": "edulink-c7b45.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:746674100825:android:4f38747753b2642ee9af48",
+        "android_client_info": {
+          "package_name": "com.tech42.edulink"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "746674100825-be345c16k35baquera2sne56sgj4m354.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tech42.edulink",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "746674100825-j0ffel9drjhj58uskn2v6kh6anslnnh5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAoPQZ93djZxwhhh8lTgiRCRQZ4y-vj-KU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "746674100825-j0ffel9drjhj58uskn2v6kh6anslnnh5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "746674100825-1tds9gii0p87r050dn9fi92d3t0cf3ev.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.tech42.edulink"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
