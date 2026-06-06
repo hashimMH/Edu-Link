@@ -182,7 +182,8 @@ const adminController = {
       const tables = [
         'notifications', 'reviews', 'payments', 'lessons',
         'messages', 'conversations', 'teacher_classes', 'appointments',
-        'user_subscriptions',
+        'user_subscriptions', 'refresh_tokens', 'password_resets',
+        'saved_tutors', 'class_recordings',
       ];
 
       const foreignKeys = {
@@ -195,6 +196,10 @@ const adminController = {
         teacher_classes: ['teacher_id', 'student_id'],
         appointments: 'student_id',
         user_subscriptions: 'user_id',
+        refresh_tokens: 'user_id',
+        password_resets: 'user_id',
+        saved_tutors: 'student_id',
+        class_recordings: ['student_id', 'teacher_id'],
       };
 
       for (const table of tables) {
@@ -227,19 +232,40 @@ const adminController = {
   // ── Tutors CRUD ────────────────────────────────────────────────────
   getAllTutorsAdmin(req, res, next) {
     try {
-      const tutors = db.prepare(`
+      const { search, page = 1, limit = 20 } = req.query;
+      const offset = (parseInt(page) - 1) * parseInt(limit);
+      let sql = `
         SELECT t.*, u.email, u.is_active
         FROM tutors t JOIN users u ON t.user_id = u.id
-        ORDER BY t.created_at DESC
-      `).all();
+        WHERE 1=1
+      `;
+      const params = [];
+
+      if (search) {
+        sql += ' AND (t.name LIKE ? OR t.accent LIKE ? OR t.country LIKE ? OR u.email LIKE ?)';
+        params.push(`%${search}%`, `%${search}%`, `%${search}%`, `%${search}%`);
+      }
+
+      const countSql = sql.replace(/SELECT .* FROM/, 'SELECT COUNT(*) AS total FROM');
+      const total = db.prepare(countSql).get(...params);
+
+      sql += ' ORDER BY t.created_at DESC LIMIT ? OFFSET ?';
+      params.push(parseInt(limit), offset);
+
+      const tutors = db.prepare(sql).all(...params);
 
       res.json({
         success: true,
-        data: tutors.map(t => ({
-          ...t,
-          interests: JSON.parse(t.interests || '[]'),
-          is_available: !!t.is_available,
-        })),
+        data: {
+          tutors: tutors.map(t => ({
+            ...t,
+            interests: JSON.parse(t.interests || '[]'),
+            is_available: !!t.is_available,
+          })),
+          total: total.total,
+          page: parseInt(page),
+          pages: Math.ceil(total.total / parseInt(limit)),
+        },
       });
     } catch (err) {
       next(err);
@@ -271,8 +297,33 @@ const adminController = {
   // ── Subscriptions CRUD ─────────────────────────────────────────────
   getAllSubscriptionsAdmin(req, res, next) {
     try {
-      const subs = db.prepare('SELECT * FROM subscriptions ORDER BY created_at DESC').all();
-      res.json({ success: true, data: subs });
+      const { search, page = 1, limit = 20 } = req.query;
+      const offset = (parseInt(page) - 1) * parseInt(limit);
+      let sql = 'SELECT * FROM subscriptions WHERE 1=1';
+      const params = [];
+
+      if (search) {
+        sql += ' AND (title LIKE ? OR duration LIKE ?)';
+        params.push(`%${search}%`, `%${search}%`);
+      }
+
+      const countSql = sql.replace(/SELECT .* FROM/, 'SELECT COUNT(*) AS total FROM');
+      const total = db.prepare(countSql).get(...params);
+
+      sql += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
+      params.push(parseInt(limit), offset);
+
+      const subs = db.prepare(sql).all(...params);
+
+      res.json({
+        success: true,
+        data: {
+          subscriptions: subs,
+          total: total.total,
+          page: parseInt(page),
+          pages: Math.ceil(total.total / parseInt(limit)),
+        },
+      });
     } catch (err) { next(err); }
   },
 
@@ -330,12 +381,37 @@ const adminController = {
   // ── Lessons CRUD ───────────────────────────────────────────────────
   getAllLessonsAdmin(req, res, next) {
     try {
-      const lessons = db.prepare(`
+      const { search, page = 1, limit = 20 } = req.query;
+      const offset = (parseInt(page) - 1) * parseInt(limit);
+      let sql = `
         SELECT l.*, u.first_name, u.last_name
         FROM lessons l JOIN users u ON l.user_id = u.id
-        ORDER BY l.created_at DESC
-      `).all();
-      res.json({ success: true, data: lessons });
+        WHERE 1=1
+      `;
+      const params = [];
+
+      if (search) {
+        sql += ' AND (l.title LIKE ? OR u.first_name LIKE ? OR u.last_name LIKE ?)';
+        params.push(`%${search}%`, `%${search}%`, `%${search}%`);
+      }
+
+      const countSql = sql.replace(/SELECT .* FROM/, 'SELECT COUNT(*) AS total FROM');
+      const total = db.prepare(countSql).get(...params);
+
+      sql += ' ORDER BY l.created_at DESC LIMIT ? OFFSET ?';
+      params.push(parseInt(limit), offset);
+
+      const lessons = db.prepare(sql).all(...params);
+
+      res.json({
+        success: true,
+        data: {
+          lessons,
+          total: total.total,
+          page: parseInt(page),
+          pages: Math.ceil(total.total / parseInt(limit)),
+        },
+      });
     } catch (err) { next(err); }
   },
 
@@ -373,29 +449,78 @@ const adminController = {
   // ── Appointments ──────────────────────────────────────────────────
   getAllAppointmentsAdmin(req, res, next) {
     try {
-      const appts = db.prepare(`
+      const { search, page = 1, limit = 20 } = req.query;
+      const offset = (parseInt(page) - 1) * parseInt(limit);
+      let sql = `
         SELECT a.*, 
                s.first_name AS student_first, s.last_name AS student_last,
                t.name AS tutor_name
         FROM appointments a
         JOIN users s ON a.student_id = s.id
         JOIN tutors t ON a.tutor_id = t.id
-        ORDER BY a.date DESC, a.start_time DESC
-      `).all();
-      res.json({ success: true, data: appts });
+        WHERE 1=1
+      `;
+      const params = [];
+
+      if (search) {
+        sql += ' AND (s.first_name LIKE ? OR s.last_name LIKE ? OR t.name LIKE ? OR a.status LIKE ?)';
+        params.push(`%${search}%`, `%${search}%`, `%${search}%`, `%${search}%`);
+      }
+
+      const countSql = sql.replace(/SELECT .* FROM/, 'SELECT COUNT(*) AS total FROM');
+      const total = db.prepare(countSql).get(...params);
+
+      sql += ' ORDER BY a.date DESC, a.start_time DESC LIMIT ? OFFSET ?';
+      params.push(parseInt(limit), offset);
+
+      const appts = db.prepare(sql).all(...params);
+
+      res.json({
+        success: true,
+        data: {
+          appointments: appts,
+          total: total.total,
+          page: parseInt(page),
+          pages: Math.ceil(total.total / parseInt(limit)),
+        },
+      });
     } catch (err) { next(err); }
   },
 
   // ── Payments ──────────────────────────────────────────────────────
   getAllPaymentsAdmin(req, res, next) {
     try {
-      const payments = db.prepare(`
+      const { search, page = 1, limit = 20 } = req.query;
+      const offset = (parseInt(page) - 1) * parseInt(limit);
+      let sql = `
         SELECT p.*, u.first_name, u.last_name, u.email
         FROM payments p JOIN users u ON p.user_id = u.id
-        ORDER BY p.date DESC
-        LIMIT 200
-      `).all();
-      res.json({ success: true, data: payments });
+        WHERE 1=1
+      `;
+      const params = [];
+
+      if (search) {
+        sql += ' AND (u.first_name LIKE ? OR u.last_name LIKE ? OR u.email LIKE ? OR p.type LIKE ? OR p.status LIKE ?)';
+        params.push(`%${search}%`, `%${search}%`, `%${search}%`, `%${search}%`, `%${search}%`);
+      }
+
+      const countSql = sql.replace(/SELECT .* FROM/, 'SELECT COUNT(*) AS total FROM');
+      const total = db.prepare(countSql).get(...params);
+
+      sql += ' ORDER BY p.date DESC LIMIT ? OFFSET ?';
+      params.push(parseInt(limit), offset);
+
+      const payments = db.prepare(sql).all(...params);
+
+      res.json({
+        success: true,
+        data: {
+          payments,
+          total: total.total,
+          page: parseInt(page),
+          pages: Math.ceil(total.total / parseInt(limit)),
+        },
+      });
     } catch (err) { next(err); }
   },
 

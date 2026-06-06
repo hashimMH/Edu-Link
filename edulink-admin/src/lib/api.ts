@@ -37,10 +37,10 @@ export const api = {
   updateUser: (id: string, data: any) => request<any>(`/admin/users/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   deleteUser: (id: string) => request<any>(`/admin/users/${id}`, { method: 'DELETE' }),
 
-  getTutors: () => request<any[]>('/admin/tutors'),
+  getTutors: (params?: string) => request<any>(`/admin/tutors${params ? `?${params}` : ''}`),
   updateTutor: (id: string, data: any) => request<any>(`/admin/tutors/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
 
-  getSubscriptions: () => request<any[]>('/admin/subscriptions'),
+  getSubscriptions: (params?: string) => request<any>(`/admin/subscriptions${params ? `?${params}` : ''}`),
   getSubscriptionsMaster: () => request<{ enabled: boolean }>('/admin/subscriptions-master'),
   toggleSubscriptionsMaster: (enabled: boolean) =>
     request<{ enabled: boolean }>('/admin/subscriptions-master', { method: 'PUT', body: JSON.stringify({ enabled }) }),
@@ -48,13 +48,13 @@ export const api = {
   updateSubscription: (id: string, data: any) => request<any>(`/admin/subscriptions/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   deleteSubscription: (id: string) => request<any>(`/admin/subscriptions/${id}`, { method: 'DELETE' }),
 
-  getLessons: () => request<any[]>('/admin/lessons'),
+  getLessons: (params?: string) => request<any>(`/admin/lessons${params ? `?${params}` : ''}`),
   createLesson: (data: any) => request<any>('/admin/lessons', { method: 'POST', body: JSON.stringify(data) }),
   updateLesson: (id: string, data: any) => request<any>(`/admin/lessons/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   deleteLesson: (id: string) => request<any>(`/admin/lessons/${id}`, { method: 'DELETE' }),
 
-  getAppointments: () => request<any[]>('/admin/appointments'),
-  getPayments: () => request<any[]>('/admin/payments'),
+  getAppointments: (params?: string) => request<any>(`/admin/appointments${params ? `?${params}` : ''}`),
+  getPayments: (params?: string) => request<any>(`/admin/payments${params ? `?${params}` : ''}`),
   getLegalPages: () => request<any[]>('/admin/legal'),
   updateLegalPage: (key: string, data: any) => request(`/admin/legal/${key}`, { method: 'PUT', body: JSON.stringify(data) }),
 };

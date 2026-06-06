@@ -39,12 +39,14 @@ const student1Id = uuidv4();
 const teacher1Id = uuidv4();
 const teacher2Id = uuidv4();
 const teacher3Id = uuidv4();
+const adminId = uuidv4();
 
 const users = [
   { id: student1Id, first_name: 'Karim', last_name: 'Mohammed', email: 'karimshebo15@gmail.com', password_hash: SALT, role: 'student', interests: JSON.stringify(['Arabic', 'English', 'Vocabulary']) },
   { id: teacher1Id, first_name: 'Karim', last_name: 'Mohammed', email: 'teacher1@edulink.com', password_hash: SALT, role: 'teacher', country: 'au', interests: JSON.stringify(['Arabic', 'English', 'Mathematics']) },
   { id: teacher2Id, first_name: 'Karim', last_name: 'Mohammed', email: 'teacher2@edulink.com', password_hash: SALT, role: 'teacher', country: 'uk', interests: JSON.stringify(['English', 'Science', 'Programming']) },
   { id: teacher3Id, first_name: 'Karim', last_name: 'Mohammed', email: 'teacher3@edulink.com', password_hash: SALT, role: 'teacher', country: 'us', interests: JSON.stringify(['Business', 'English']) },
+  { id: adminId, first_name: 'Admin', last_name: 'User', email: 'admin@edulink.com', password_hash: SALT, role: 'admin', country: 'us', interests: '[]' },
 ];
 
 const insertUser = db.prepare(`
@@ -59,8 +61,6 @@ for (const u of users) {
 const tutor1Id = uuidv4();
 const tutor2Id = uuidv4();
 const tutor3Id = uuidv4();
-const tutor4Id = uuidv4();
-const tutor5Id = uuidv4();
 
 const tutors = [
   { id: tutor1Id, user_id: teacher1Id, name: 'Karim Mohammed', rating: 4.5, accent: 'Australian Accent', country: 'au', description: 'Experienced tutor specializing in Arabic, English, and Mathematics. With over 5 years of teaching experience, I focus on making complex concepts easy to understand through practical examples and interactive learning methods.', video_url: 'https://youtu.be/ZK-rNEhJIDs?si=VFbJ-7zyTCpObx9s', is_available: 1, interests: JSON.stringify(['Arabic', 'English', 'Mathematics']) },

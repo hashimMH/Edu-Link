@@ -33,7 +33,7 @@ const RecordingsScreen = () => {
       setLoading(true);
       api.getRecordings()
         .then(setRecordings)
-        .catch(() => {})
+        .catch(err => console.log('Recordings:', err))
         .finally(() => setLoading(false));
     }, [])
   );

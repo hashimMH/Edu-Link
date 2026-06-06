@@ -16,9 +16,7 @@ import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {RootStackParamList, TabParamList} from '../../../models/types';
 import Background from '../components/Background';
 import {storage} from '../../../services/storage';
-import {api} from '../../../services/api';
-
-const API_HOST = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+import {api, API_HOST} from '../../../services/api';
 
 type ProfileScreenNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<TabParamList, 'Profile'>,
@@ -48,7 +46,7 @@ const ProfileScreen = () => {
       });
       api.getSubscriptionStatus()
         .then(s => setSubsEnabled(s.enabled))
-        .catch(() => {});
+        .catch(err => console.log('Subs status:', err));
     }, [])
   );
 

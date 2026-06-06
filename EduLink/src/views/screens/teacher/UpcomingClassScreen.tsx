@@ -146,11 +146,11 @@ const UpcomingClassScreen: React.FC<{navigation: any}> = ({navigation}) => {
           </View>
 
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.chatButton}>
+            <TouchableOpacity style={styles.chatButton} onPress={() => navigation.navigate('MessagesScreen')}>
               <Icon name="chatbubbles-outline" size={24} color="#000" />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.startButton}>
-              <Text style={styles.startButtonText}>start classs</Text>
+            <TouchableOpacity style={styles.startButton} onPress={() => classData && navigation.navigate('LiveClassScreen', {roomName: classData.id, className: `Class with ${classData.studentName}`})}>
+              <Text style={styles.startButtonText}>start class</Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -108,13 +108,14 @@ async function authenticateWithBackend(idToken: string) {
 
   const data = await res.json();
   if (!data.success) throw new Error(data.message || 'Authentication failed');
-
+  // Store our JWT and user data
   await storage.setToken(data.data.token);
+  if (data.data.refreshToken) await storage.setRefreshToken(data.data.refreshToken);
   await storage.setUser(data.data.user);
 
   return data.data;
 }
 
 function getApiHost() {
-  return Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+  return Platform.OS === 'android' ? 'http://10.0.2.2:3003' : 'http://localhost:3003';
 }

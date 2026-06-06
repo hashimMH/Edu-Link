@@ -8,7 +8,7 @@ const registerRules = [
     .matches(/[!@#$%^&*(),.?":{}|<>]/).withMessage('Password must include a special character'),
   body('first_name').trim().notEmpty().withMessage('First name is required'),
   body('last_name').trim().notEmpty().withMessage('Last name is required'),
-  body('role').optional().isIn(['student', 'teacher']).withMessage('Role must be student or teacher'),
+  body('role').optional().isIn(['student', 'teacher', 'admin']).withMessage('Role must be student, teacher, or admin'),
 ];
 
 const loginRules = [
@@ -30,9 +30,7 @@ const forgotPasswordRules = [
 const resetPasswordRules = [
   body('token').notEmpty().withMessage('Reset token is required'),
   body('password')
-    .isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
-    .matches(/\d/).withMessage('Password must include a number')
-    .matches(/[!@#$%^&*(),.?":{}|<>]/).withMessage('Password must include a special character'),
+    .isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
 ];
 
 module.exports = { registerRules, loginRules, googleAuthRules, forgotPasswordRules, resetPasswordRules };

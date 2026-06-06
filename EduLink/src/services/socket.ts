@@ -3,7 +3,7 @@ import { Platform } from 'react-native';
 import { storage } from './storage';
 
 const HOST = Platform.OS === 'android' ? '10.0.2.2' : 'localhost';
-const SOCKET_URL = `http://${HOST}:3000`;
+const SOCKET_URL = `http://${HOST}:3003`;
 
 let socket: Socket | null = null;
 
@@ -20,14 +20,10 @@ export async function connectSocket(): Promise<Socket> {
   socket = io(SOCKET_URL, {
     auth: { token },
     transports: ['websocket'],
-    forceNew: true,
+    autoConnect: false,
     reconnection: true,
     reconnectionAttempts: 10,
     reconnectionDelay: 2000,
-  });
-
-  socket.on('connect', () => {
-    console.log('[WS] Connected:', socket?.id);
   });
 
   socket.on('disconnect', (reason) => {
@@ -39,12 +35,17 @@ export async function connectSocket(): Promise<Socket> {
   });
 
   return new Promise((resolve, reject) => {
-    socket!.on('connect', () => resolve(socket!));
+    socket!.on('connect', () => {
+      console.log('[WS] Connected:', socket?.id);
+      resolve(socket!);
+    });
     socket!.on('connect_error', (err) => reject(err));
     // Timeout after 10s
     setTimeout(() => {
       if (!socket?.connected) reject(new Error('Socket connection timeout'));
     }, 10000);
+    // Connect AFTER all listeners are attached
+    socket!.connect();
   });
 }
 

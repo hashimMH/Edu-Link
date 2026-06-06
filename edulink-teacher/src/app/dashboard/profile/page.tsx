@@ -168,7 +168,7 @@ export default function ProfilePage() {
             <div className="relative group cursor-pointer" onClick={() => avatarRef.current?.click()}>
               <div className="w-20 h-20 rounded-full bg-gray-200 overflow-hidden flex items-center justify-center">
                 {avatarUrl ? (
-                  <img src={`http://localhost:3000${avatarUrl}`} alt="" className="w-full h-full object-cover" />
+                  <img src={`http://localhost:3003${avatarUrl}`} alt="" className="w-full h-full object-cover" />
                 ) : (
                   <User size={32} className="text-gray-400" />
                 )}
@@ -248,7 +248,7 @@ export default function ProfilePage() {
             <div className="flex items-center gap-2 mb-4"><Video size={20} className="text-blue-500" /><h3 className="text-lg font-semibold">Intro Video</h3></div>
             {videoUrl ? (
               <div className="space-y-3">
-                <video src={`http://localhost:3000${videoUrl}`} controls className="w-full rounded-lg max-h-48 bg-black" />
+                <video src={`http://localhost:3003${videoUrl}`} controls className="w-full rounded-lg max-h-48 bg-black" />
                 <p className="text-xs text-gray-400 truncate">{videoUrl}</p>
               </div>
             ) : (
@@ -272,7 +272,7 @@ export default function ProfilePage() {
               <div className="space-y-2">
                 {certs.map(c => (
                   <div key={c.id} className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2">
-                    <a href={`http://localhost:3000${c.file_url}`} target="_blank" className="text-sm text-primary hover:underline truncate flex-1">{c.title}</a>
+                    <a href={`http://localhost:3003${c.file_url}`} target="_blank" className="text-sm text-primary hover:underline truncate flex-1">{c.title}</a>
                     <button onClick={() => deleteCert(c.id)} className="p-1 hover:bg-red-50 rounded text-red-400"><Trash2 size={14} /></button>
                   </div>
                 ))}

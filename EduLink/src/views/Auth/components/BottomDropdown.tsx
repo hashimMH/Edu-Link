@@ -11,6 +11,8 @@ interface BottomDropdownProps {
     isPassword?: boolean;
     items?: any[];
     errorMessage?: string;
+    onSelect?: (value: string) => void;
+    value?: string;
 }
 
 const BottomDropdown: React.FC<BottomDropdownProps> = ({
@@ -20,10 +22,12 @@ const BottomDropdown: React.FC<BottomDropdownProps> = ({
     isPassword = false,
     items = [],
     errorMessage,
+    onSelect,
+    value,
     ...props
 }) => {
     const [modalVisible, setModalVisible] = useState(false);
-    const [selectedValue, setSelectedValue] = useState("Select an option");
+    const [selectedValue, setSelectedValue] = useState(value || "Select an option");
 
     const options = items || [];
 
@@ -66,6 +70,7 @@ const BottomDropdown: React.FC<BottomDropdownProps> = ({
                                 onPress={() => {
                                     setSelectedValue(item);
                                     setModalVisible(false);
+                                    if (onSelect) onSelect(item);
                                 }}
                             >
                                 <Text style={[

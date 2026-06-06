@@ -7,6 +7,7 @@ import {
   ScrollView,
   Image,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -20,6 +21,7 @@ const LessonHistoryScreen = () => {
   const insets = useSafeAreaInsets();
   const [lessonsData, setLessonsData] = useState<LessonItem[]>([]);
   const [sortNewest, setSortNewest] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadLessonHistory = async () => {
@@ -28,6 +30,8 @@ const LessonHistoryScreen = () => {
         setLessonsData(lessons);
       } catch (error) {
         console.error('Failed to load lesson history:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -57,7 +61,7 @@ const LessonHistoryScreen = () => {
   );
 
   const renderLessonItem = (item: LessonItem) => (
-    <TouchableOpacity key={item.id} style={styles.lessonItem}>
+    <View key={item.id} style={styles.lessonItem}>
       <View style={styles.playButtonContainer}>
         <Icon name="play" size={24} color="#fff" />
       </View>
@@ -69,7 +73,7 @@ const LessonHistoryScreen = () => {
         </View>
         <Text style={styles.lessonDescription}>{item.description}</Text>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 
   return (
@@ -86,7 +90,11 @@ const LessonHistoryScreen = () => {
         <View style={styles.placeholderRight} />
       </View>
 
-      {sortedLessons.length > 0 ? (
+      {loading ? (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator size="large" color="#10A7DA" />
+        </View>
+      ) : sortedLessons.length > 0 ? (
         <ScrollView style={styles.scrollView}>
           <TouchableOpacity style={styles.sortContainer} onPress={toggleSort}>
             <FontAwesome6 

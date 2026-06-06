@@ -11,8 +11,7 @@ import {
 } from '@livekit/react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {storage} from '../../../services/storage';
-
-const API_HOST = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+import {API_HOST} from '../../../services/api';
 
 type RouteParams = {
   LiveClassScreen: { roomName: string; className?: string };
@@ -99,11 +98,8 @@ function RoomView({
   const [micOn, setMicOn] = useState(true);
   const [camOn, setCamOn] = useState(true);
 
-  // Local camera track — taken directly from the local participant (stable ref)
-  const localCameraPub = useMemo(
-    () => localParticipant?.getTrackPublication?.('camera'),
-    [localParticipant]
-  );
+  // Local camera track — use direct properties from LiveKit v2.x
+  const localCameraPub = localParticipant?.cameraTrack;
   const hasLocalCamera = !!(localCameraPub?.track && !localCameraPub.isMuted && camOn);
 
   // Remote video tracks — stable filter
@@ -117,7 +113,7 @@ function RoomView({
 
   const toggleMic = () => {
     const next = !micOn;
-    const micPub = localParticipant?.getTrackPublication?.('microphone');
+    const micPub = localParticipant?.microphoneTrack;
     if (micPub?.track) {
       if (next) micPub.track.unmute();
       else micPub.track.mute();

@@ -9,11 +9,9 @@ import { useNavigation } from '@react-navigation/native';
 import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
 import DocumentPicker, { DocumentPickerResponse } from 'react-native-document-picker';
 import TextInputField from '../../Auth/components/TextInputField';
-import { api } from '../../../services/api';
+import { api, API_HOST } from '../../../services/api';
 import { storage } from '../../../services/storage';
 import { DeleteModal } from '../stacks/components/DeleteModal';
-
-const API_HOST = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
 
 interface Certificate {
   id: string;
@@ -31,10 +29,6 @@ const TeacherAccountScreen = () => {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
-  const [profileVideo, setProfileVideo] = useState<any>({
-    name: 'profile video', size: '16 MB', progress: 40,
-  });
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [deleteVideoModalVisible, setDeleteVideoModalVisible] = useState(false);
   const [certificateToDelete, setCertificateToDelete] = useState<string | null>(null);

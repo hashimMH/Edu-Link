@@ -4,8 +4,8 @@ import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('teacher1@edulink.com');
-  const [password, setPassword] = useState('password123!');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -18,6 +18,7 @@ export default function LoginPage() {
       const res = await api.login(email, password);
       localStorage.setItem('admin_token', res.token);
       localStorage.setItem('admin_user', JSON.stringify(res.user));
+      document.cookie = `admin_token=${res.token}; path=/; max-age=86400; SameSite=Lax`;
       router.push('/dashboard');
     } catch (err: any) {
       setError(err.message || 'Login failed');

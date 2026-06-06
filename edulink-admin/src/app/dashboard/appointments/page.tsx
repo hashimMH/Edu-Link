@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import { useAdminSocket } from '@/components/SocketProvider';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const statusColors: Record<string, string> = {
   upcoming: 'bg-blue-100 text-blue-700',
@@ -10,11 +11,19 @@ const statusColors: Record<string, string> = {
 };
 
 export default function AppointmentsPage() {
+  const [data, setData] = useState<any>(null);
   const [appts, setAppts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
   const { refreshTrigger } = useAdminSocket();
 
-  useEffect(() => { api.getAppointments().then(setAppts).finally(() => setLoading(false)); }, [refreshTrigger]);
+  const load = (p: number) => {
+    setLoading(true);
+    const params = new URLSearchParams({ page: String(p), limit: '20' });
+    api.getAppointments(params.toString()).then(d => { setData(d); setAppts(d.appointments || []); }).finally(() => setLoading(false));
+  };
+
+  useEffect(() => { load(page); }, [refreshTrigger, page]);
 
   if (loading) return <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mt-20" />;
 
@@ -46,6 +55,28 @@ export default function AppointmentsPage() {
         </table>
         {appts.length === 0 && <p className="text-center py-8 text-gray-400">No appointments found</p>}
       </div>
+
+      {data && data.pages > 1 && (
+        <div className="flex items-center justify-center gap-3 mt-6">
+          <button
+            onClick={() => { setPage(page - 1); load(page - 1); }}
+            disabled={page <= 1}
+            className="flex items-center gap-1 px-3 py-2 rounded-lg border hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <ChevronLeft size={16} /> Prev
+          </button>
+          <span className="text-sm text-gray-600">
+            Page {data.page} of {data.pages}
+          </span>
+          <button
+            onClick={() => { setPage(page + 1); load(page + 1); }}
+            disabled={page >= data.pages}
+            className="flex items-center gap-1 px-3 py-2 rounded-lg border hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Next <ChevronRight size={16} />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

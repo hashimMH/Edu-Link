@@ -156,7 +156,7 @@ const AccountScreen = () => {
         {/* Profile Picture */}
         <TouchableOpacity style={styles.profileImageContainer} onPress={handlePickImage}>
           <Image
-            source={avatarUrl ? { uri: `http://10.0.2.2:3000${avatarUrl}` } : require('../../../../assets/profilepic.png')}
+            source={avatarUrl ? { uri: `http://10.0.2.2:3003${avatarUrl}` } : require('../../../../assets/profilepic.png')}
             style={styles.profileImage}
           />
           <View style={styles.editImageButton}>

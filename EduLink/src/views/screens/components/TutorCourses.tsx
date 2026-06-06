@@ -5,8 +5,7 @@ import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import { TutorCourse } from '../../../models/types';
-
-const API_HOST = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+import { API_HOST } from '../../../services/api';
 
 function getImageSource(avatarUrl: string | null | undefined) {
   if (!avatarUrl) return require("../../../../assets/karim.png");

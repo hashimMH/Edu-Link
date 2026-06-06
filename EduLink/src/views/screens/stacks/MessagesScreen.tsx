@@ -8,6 +8,7 @@ import {
   FlatList,
   Image,
   SafeAreaView,
+  ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
@@ -18,6 +19,7 @@ import {api, Message} from '../../../services/api';
 const MessagesScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const [messages, setMessages] = useState<Message[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadMessages = async () => {
@@ -26,6 +28,8 @@ const MessagesScreen = () => {
         setMessages(messageData);
       } catch (error) {
         console.error('Failed to load messages:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -71,15 +75,22 @@ const MessagesScreen = () => {
           style={styles.searchInput}
           placeholder="Search Messages"
           placeholderTextColor="#6B7280"
+          onChangeText={() => {}}
         />
       </View>
       <View style={styles.messagesContainer}>
+        {loading ? (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <ActivityIndicator size="large" color="#10A7DA" />
+          </View>
+        ) : (
         <FlatList
           data={messages}
           renderItem={renderMessage}
           keyExtractor={item => item.id}
           showsVerticalScrollIndicator={false}
         />
+        )}
       </View>
     </SafeAreaView>
   );

@@ -8,9 +8,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '../../../models/types';
-import {api} from '../../../services/api';
-
-const API_HOST = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+import {api, API_HOST} from '../../../services/api';
 
 function getImageSource(avatarUrl: string | null | undefined) {
   if (!avatarUrl) return require('../../../../assets/karim.png');
@@ -29,7 +27,7 @@ const SavedTutorsScreen = () => {
       setLoading(true);
       api.getSavedTutors()
         .then(setSaved)
-        .catch(() => {})
+        .catch(err => console.log('Saved tutors:', err))
         .finally(() => setLoading(false));
     }, [])
   );

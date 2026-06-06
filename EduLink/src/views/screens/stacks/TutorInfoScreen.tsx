@@ -8,7 +8,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '../../../models/types';
-import {api} from '../../../services/api';
+import {api, API_HOST} from '../../../services/api';
 
 type Props = {
   route: RouteProp<RootStackParamList, 'TutorInfoScreen'>;
@@ -24,7 +24,7 @@ const TutorInfoScreen: React.FC<Props> = ({route, navigation}) => {
   useEffect(() => {
     api.checkTutorSaved(tutor.id)
       .then(r => setIsSaved(r.saved))
-      .catch(() => {});
+      .catch(err => console.log('Tutor saved check:', err));
   }, [tutor.id]);
 
   const handleChatPress = async () => {
@@ -74,7 +74,6 @@ const TutorInfoScreen: React.FC<Props> = ({route, navigation}) => {
     // If it's already a full URL (http/https), use as-is
     if (rawUrl.startsWith('http://') || rawUrl.startsWith('https://')) return rawUrl;
     // Prepend API host for relative paths like /uploads/videos/...
-    const API_HOST = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
     return `${API_HOST}${rawUrl}`;
   };
 

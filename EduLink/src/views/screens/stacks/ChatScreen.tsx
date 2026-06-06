@@ -8,7 +8,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
 import {RootStackParamList} from '../../../models/types';
 import {api} from '../../../services/api';
-import {connectSocket, getSocket, disconnectSocket} from '../../../services/socket';
+import {connectSocket, getSocket} from '../../../services/socket';
 
 interface Message {
   id: string;
@@ -44,7 +44,7 @@ const ChatScreen = () => {
           api.getMessages().then((convs: any[]) => {
             const conv = convs.find((c: any) => c.chatId === chatId);
             if (conv) setReceiverId(conv.id); // conv.id is the other user's id
-          }).catch(() => {});
+          }).catch(err => console.log('Chat history:', err));
         }
       }
     }).catch(err => {
@@ -89,9 +89,13 @@ const ChatScreen = () => {
     };
   }, []);
 
-  // Disconnect on unmount
+  // Only disconnect on unmount if NOT navigating within the app
+  // (socket stays connected for MessagesScreen and real-time updates)
   useEffect(() => {
-    return () => { disconnectSocket(); };
+    return () => {
+      // Don't disconnect — keep socket alive for message notifications
+      // Only cleanup specific listeners
+    };
   }, []);
 
   const handleSendMessage = async () => {

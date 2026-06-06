@@ -45,25 +45,25 @@ export type RootStackParamList = {
 	UpcomingClassScreen: undefined;
 	TeacherEarningsScreen: undefined;
 	AllPaymentsScreen: undefined;
-\tLiveClassScreen: {
-\t\troomName: string;
-\t\tclassName?: string;
-\t};
-\tRecordingsScreen: undefined;
-\tRecordingDetailScreen: {
-\t\trecordingId: string;
-\t};
-\tSavedTutorsScreen: undefined;
-\tLegalScreen: {
-\t\tpageKey: 'privacy' | 'terms';
-\t};
+	LiveClassScreen: {
+		roomName: string;
+		className?: string;
+	};
+	RecordingsScreen: undefined;
+	RecordingDetailScreen: {
+		recordingId: string;
+	};
+	SavedTutorsScreen: undefined;
+	LegalScreen: {
+		pageKey: 'privacy' | 'terms';
+	};
 };
 
 export type TabParamList = {
-\tHome: undefined;
-\tProfile: undefined;
-\tTutors: undefined;
-\tAIChat: undefined;
+	Home: undefined;
+	Profile: undefined;
+	Tutors: undefined;
+	AIChat: undefined;
 };
 
 export type TeacherTabParamList = {

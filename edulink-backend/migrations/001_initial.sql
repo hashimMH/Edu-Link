@@ -3,8 +3,8 @@ CREATE TABLE IF NOT EXISTS users (
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
   email TEXT NOT NULL UNIQUE,
-  password_hash TEXT NOT NULL,
-  role TEXT NOT NULL CHECK(role IN ('student', 'teacher')),
+  password_hash TEXT,
+  role TEXT NOT NULL CHECK(role IN ('student', 'teacher', 'admin')),
   avatar_url TEXT,
   country TEXT,
   interests TEXT,          -- JSON array stored as string

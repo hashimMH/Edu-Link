@@ -1,4 +1,7 @@
 const router = require('express').Router();
+const { generalLimiter } = require('../middleware/rateLimiter');
+
+router.use(generalLimiter);
 
 router.use('/auth', require('./auth'));
 router.use('/users', require('./users'));

@@ -6,9 +6,7 @@ import {
 import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {storage} from '../../../services/storage';
-import {api} from '../../../services/api';
-
-const API_HOST = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+import {api, API_HOST} from '../../../services/api';
 
 interface ChatMessage {
   id: string;
@@ -22,7 +20,7 @@ const AIChatScreen = () => {
     {
       id: 'welcome',
       role: 'assistant',
-      content: "Hi! I'm your AI study assistant. How can I help you with your studies today?",
+      content: "(Coming Soon) Hi! I'm your AI study assistant. How can I help you with your studies today?",
     },
   ]);
   const [input, setInput] = useState('');
@@ -120,8 +118,8 @@ const AIChatScreen = () => {
       {loading && (
         <View style={styles.typing}>
           <View style={styles.typingDot} />
-          <View style={[styles.typingDot, {animationDelay: '0.2s'}]} />
-          <View style={[styles.typingDot, {animationDelay: '0.4s'}]} />
+          <View style={styles.typingDot} />
+          <View style={styles.typingDot} />
         </View>
       )}
 

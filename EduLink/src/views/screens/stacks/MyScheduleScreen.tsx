@@ -101,7 +101,7 @@ const MyScheduleScreen = () => {
 
       <View style={styles.instructorCard}>
         <View style={styles.instructorInfo}>
-          <Image source={require('../../../../assets/karim.png')} style={styles.avatar} />
+          <Image source={appointment.instructor?.avatar ? {uri: appointment.instructor.avatar} : require('../../../../assets/karim.png')} style={styles.avatar} />
           <View>
             <Text style={styles.instructorName}>{appointment.instructor.name}</Text>
             <Text style={styles.instructorRole}>{appointment.instructor.role}</Text>

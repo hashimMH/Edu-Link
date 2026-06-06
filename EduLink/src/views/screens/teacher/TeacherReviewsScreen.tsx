@@ -24,6 +24,7 @@ const ReviewRow = ({review}: {review: ReviewItem}) => (
       </Text>
       <Text style={styles.dateTime}>{review.date}</Text>
       <Text style={styles.dateTime}>{review.time}</Text>
+      {review.comment ? <Text style={styles.commentText} numberOfLines={2}>{review.comment}</Text> : null}
     </View>
   </TouchableOpacity>
 );
@@ -147,6 +148,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#6E7191',
     fontFamily: 'SF-Pro-Display-Regular',
+  },
+  commentText: {
+    fontSize: 14,
+    color: '#4A5568',
+    fontFamily: 'SF-Pro-Display-Regular',
+    marginTop: 6,
+    lineHeight: 20,
   },
   empty: {
     textAlign: 'center',

@@ -21,7 +21,7 @@ const LegalScreen = () => {
   useEffect(() => {
     api.getLegalPage(pageKey)
       .then(setPage)
-      .catch(() => {})
+      .catch(err => console.log('Legal page:', err))
       .finally(() => setLoading(false));
   }, [pageKey]);
 

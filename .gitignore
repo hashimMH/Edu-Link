@@ -1,5 +1,5 @@
-EduLink.pptx
-EduLink_Presentation.pptxedulink-backend/config/serviceAccountKey.json
-
-edulink-backend/config/serviceAccountKey.json
-edulink-backend/.env
+*.pptx
+**/.env
+**/serviceAccountKey.json
+**/google-services.json
+**/GoogleService-Info.plist

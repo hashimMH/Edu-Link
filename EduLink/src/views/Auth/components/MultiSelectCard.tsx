@@ -15,17 +15,20 @@ interface Item {
 
 interface MultiSelectCardProps {
     items: Item[] | any;
+    onSelectionChange?: (selected: string[]) => void;
 }
 
-export default function MultiSelectCard({ items }: MultiSelectCardProps) {
+export default function MultiSelectCard({ items, onSelectionChange }: MultiSelectCardProps) {
     const [itemsList, setItems] = useState(items);
-    // const [selected, setSelected] = useState(items);
 
     const handleSelect = (index: number) => {
-        // Update the `selected` property of the item at the given index
         const updatedItems = [...itemsList];
         updatedItems[index].selected = !updatedItems[index].selected;
-        setItems(updatedItems);  // Update the state
+        setItems(updatedItems);
+        if (onSelectionChange) {
+            const selected = updatedItems.filter((i: Item) => i.selected).map((i: Item) => i.name);
+            onSelectionChange(selected);
+        }
     };
 
     return (

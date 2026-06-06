@@ -13,14 +13,13 @@ import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import {CompositeNavigationProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
-import {RootStackParamList, TabParamList} from '../../../models/types';
+import {RootStackParamList, TeacherTabParamList} from '../../../models/types';
 import Background from '../components/Background';
 import {storage} from '../../../services/storage';
-
-const API_HOST = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+import {API_HOST} from '../../../services/api';
 
 type ProfileScreenNavigationProp = CompositeNavigationProp<
-  BottomTabNavigationProp<TabParamList, 'Profile'>,
+  BottomTabNavigationProp<TeacherTabParamList, 'Profile'>,
   StackNavigationProp<RootStackParamList>
 >;
 

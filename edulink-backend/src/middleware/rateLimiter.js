@@ -1,9 +1,10 @@
 const rateLimit = require('express-rate-limit');
 const env = require('../config/env');
 
+// General API limiter — generous for chat, browsing, etc.
 const generalLimiter = rateLimit({
   windowMs: env.RATE_LIMIT_WINDOW_MS,
-  max: env.RATE_LIMIT_MAX,
+  max: Math.max(env.RATE_LIMIT_MAX, 1000), // at least 1000 per window
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, message: 'Too many requests, please try again later' },

@@ -13,7 +13,7 @@ export function connectTeacherSocket(): Socket {
   const token = localStorage.getItem('teacher_token');
   if (!token) throw new Error('No auth token');
 
-  socket = io('http://localhost:3000', {
+  socket = io('http://localhost:3003', {
     auth: { token },
     transports: ['websocket'],
     reconnection: true,

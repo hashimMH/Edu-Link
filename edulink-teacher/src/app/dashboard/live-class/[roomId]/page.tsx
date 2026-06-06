@@ -273,15 +273,9 @@ function MeetRoom({ roomName, onLeave }: { roomName: string; onLeave: () => void
             onClick={toggleCam}
             label={camOn ? 'Camera' : 'Camera'}
           />
-          <ControlBtn
-            icon={<MonitorUp size={18} />}
-            active
-            onClick={() => {}}
-            label="Present"
-          />
         </div>
         <button
-          onClick={onLeave}
+          onClick={() => { if (window.confirm('End this class? The student will be disconnected.')) onLeave(); }}
           className="w-10 h-10 rounded-full bg-red-600 hover:bg-red-700 flex items-center justify-center shadow-lg shadow-red-600/20 transition-colors"
         >
           <PhoneOff size={18} className="text-white" />

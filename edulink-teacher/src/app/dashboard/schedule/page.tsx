@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
-import { Calendar, Clock, Trash2, Plus, X } from 'lucide-react';
+import { Calendar, Clock, Trash2, Plus, X, Search } from 'lucide-react';
 
 const DAYS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 const TIMES = ['08:00 AM', '09:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '01:00 PM', '02:00 PM', '03:00 PM', '04:00 PM', '05:00 PM', '06:00 PM', '07:00 PM', '08:00 PM'];
@@ -13,6 +13,7 @@ export default function SchedulePage() {
   const [classes, setClasses] = useState<any[]>([]);
   const [availability, setAvailability] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
 
   const [showAdd, setShowAdd] = useState(false);
   const [avDay, setAvDay] = useState('MON');
@@ -88,7 +89,16 @@ export default function SchedulePage() {
 
       {tab === 'classes' && !loading && (
         <div className="space-y-3">
-          {classes.map(c => (
+          <div className="relative">
+            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Search by student name..."
+              className="w-full pl-10 pr-4 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-primary outline-none"
+            />
+          </div>
+          {classes.filter(c => !search || c.studentName.toLowerCase().includes(search.toLowerCase())).map(c => (
             <div key={c.id} className="bg-white rounded-xl shadow-sm border p-4 flex items-center justify-between">
               <div>
                 <p className="font-semibold text-gray-900">{c.studentName}</p>
@@ -110,7 +120,11 @@ export default function SchedulePage() {
               </div>
             </div>
           ))}
-          {classes.length === 0 && <p className="text-gray-400 text-center py-8">No classes found</p>}
+          {classes.length === 0 ? (
+            <p className="text-gray-400 text-center py-8">No classes found</p>
+          ) : classes.filter(c => !search || c.studentName.toLowerCase().includes(search.toLowerCase())).length === 0 ? (
+            <p className="text-gray-400 text-center py-8">No classes match your search</p>
+          ) : null}
         </div>
       )}
 

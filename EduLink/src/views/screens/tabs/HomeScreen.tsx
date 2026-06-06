@@ -44,6 +44,7 @@ const HomeScreen = ({ navigation }: { navigation: HomeScreenNavigationProp }) =>
   const [subscriptionsEnabled, setSubscriptionsEnabled] = useState(true);
   const [tutors, setTutors] = useState<Tutor[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [progress, setProgress] = useState<number>(0);
   const [todayMinutes, setTodayMinutes] = useState<number>(0);
   const [totalMinutes, setTotalMinutes] = useState<number>(60);
@@ -52,25 +53,24 @@ const HomeScreen = ({ navigation }: { navigation: HomeScreenNavigationProp }) =>
   const [unreadCount, setUnreadCount] = useState(0);
   const insets = useSafeAreaInsets();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [subscriptionsData, tutorsData, statusData] = await Promise.all([
-          api.getSubscriptions(),
-          api.getTutors(),
-          api.getSubscriptionStatus().catch(() => ({ enabled: true })),
-        ]);
-        setSubscriptions(subscriptionsData);
-        setSubscriptionsEnabled(statusData.enabled);
-        setTutors(tutorsData);
-        dispatch(storeTutors(tutorsData));
+  const fetchData = React.useCallback(async () => {
+    try {
+      const [subscriptionsData, tutorsData, statusData] = await Promise.all([
+        api.getSubscriptions(),
+        api.getTutors(),
+        api.getSubscriptionStatus().catch(() => ({ enabled: true })),
+      ]);
+      setSubscriptions(subscriptionsData);
+      setSubscriptionsEnabled(statusData.enabled);
+      setTutors(tutorsData);
+      dispatch(storeTutors(tutorsData));
 
-        // Fetch real learning stats
-        try {
-          const [lessons, mySubs] = await Promise.all([
-            api.getLessonHistory(),
-            api.getMySubscriptions().catch(() => []),
-          ]);
+      // Fetch real learning stats
+      try {
+        const [lessons, mySubs] = await Promise.all([
+          api.getLessonHistory(),
+          api.getMySubscriptions().catch(() => []),
+        ]);
           // Compute today's minutes from lessons
           const now = new Date();
           const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
@@ -101,16 +101,18 @@ const HomeScreen = ({ navigation }: { navigation: HomeScreenNavigationProp }) =>
         } catch (_) {}
       } catch (error) {
         console.error('Error fetching data:', error);
+        setError('Could not load data. Pull down to retry.');
       } finally {
         setLoading(false);
       }
-    };
+    }, [dispatch]);
 
+    useEffect(() => {
     fetchData();
     // Load user name from storage
     storage.getUser().then(u => {
       if (u) setUserName(u.firstName);
-      else api.getProfile().then(p => setUserName(p.firstName)).catch(() => {});
+      else api.getProfile().then(p => setUserName(p.firstName)).catch(err => console.log('Profile load failed:', err));
     });
 
     // Connect socket and listen for notifications
@@ -118,8 +120,8 @@ const HomeScreen = ({ navigation }: { navigation: HomeScreenNavigationProp }) =>
       socket.on('new_notification', () => {
         setUnreadCount(prev => prev + 1);
       });
-    }).catch(() => {});
-  }, [dispatch]);
+    }).catch(err => console.log('Socket connect failed:', err));
+  }, [fetchData]);
 
   if (loading) {
     return <View />;
@@ -149,6 +151,14 @@ const HomeScreen = ({ navigation }: { navigation: HomeScreenNavigationProp }) =>
         </View>
       </HomeUperView>
       <ScrollView>
+        {error ? (
+          <View style={{ margin: 16, padding: 14, backgroundColor: '#FFF5F5', borderRadius: 10, borderWidth: 1, borderColor: '#FED7D7', alignItems: 'center' }}>
+            <Text style={{ color: '#C53030', fontSize: 14, marginBottom: 8 }}>{error}</Text>
+            <TouchableOpacity onPress={() => { setError(''); setLoading(true); fetchData(); }} style={{ paddingHorizontal: 16, paddingVertical: 8, backgroundColor: '#10A7DA', borderRadius: 8 }}>
+              <Text style={{ color: '#fff', fontWeight: '600' }}>Retry</Text>
+            </TouchableOpacity>
+          </View>
+        ) : null}
         <View style={[{ paddingTop: '20%' }]}>
           {subscriptionsEnabled && subscriptions.length > 0 && (
           <>
@@ -162,6 +172,7 @@ const HomeScreen = ({ navigation }: { navigation: HomeScreenNavigationProp }) =>
             data={subscriptions}
             renderItem={({ item }) => <SubscriptionCard item={item} />}
             keyExtractor={item => item.id}
+            nestedScrollEnabled={true}
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.subscriptionContainer}

@@ -7,8 +7,8 @@ const updateProfileRules = [
     .isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
     .matches(/\d/).withMessage('Password must include a number')
     .matches(/[!@#$%^&*(),.?":{}|<>]/).withMessage('Password must include a special character'),
-  body('first_name').optional().trim().notEmpty().withMessage('First name cannot be empty'),
-  body('last_name').optional().trim().notEmpty().withMessage('Last name cannot be empty'),
+  body('firstName').optional().trim().notEmpty().withMessage('First name cannot be empty'),
+  body('lastName').optional().trim().notEmpty().withMessage('Last name cannot be empty'),
 ];
 
 module.exports = { updateProfileRules };

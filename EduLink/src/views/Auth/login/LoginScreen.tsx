@@ -17,14 +17,58 @@ type LoginScreenNavigationProp = StackNavigationProp<
   'LoginScreen'
 >;
 
+type ErrorType = 'none' | 'empty' | 'invalid' | 'network' | 'server' | 'unknown';
+
+function getErrorMessage(type: ErrorType, serverMsg?: string): string {
+  switch (type) {
+    case 'empty':
+      return 'Please enter your email and password.';
+    case 'invalid':
+      return 'Invalid email or password. Please check and try again.';
+    case 'network':
+      return 'Unable to connect. Check your internet connection and try again.';
+    case 'server':
+      return 'Server is temporarily unavailable. Please try again later.';
+    case 'unknown':
+      return serverMsg || 'Something went wrong. Please try again.';
+    default:
+      return '';
+  }
+}
+
+function classifyError(err: any): ErrorType {
+  const msg = (err.message || '').toLowerCase();
+  if (!msg) return 'unknown';
+  if (msg.includes('network') || msg.includes('connect') || msg.includes('timeout') || msg.includes('abort')) {
+    return 'network';
+  }
+  if (msg.includes('invalid email') || msg.includes('invalid password') || msg.includes('invalid email or password')) {
+    return 'invalid';
+  }
+  if (msg.includes('server') || msg.includes('500') || msg.includes('503') || msg.includes('unavailable')) {
+    return 'server';
+  }
+  if (msg.includes('session expired')) {
+    return 'invalid';
+  }
+  return 'unknown';
+}
+
 const LoginScreen = ({navigation}: {navigation: LoginScreenNavigationProp}) => {
-  const [email, setEmail] = useState('karimshebo15@gmail.com');
-  const [password, setPassword] = useState('password123!');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<{type: ErrorType; message: string}>({type: 'none', message: ''});
+
+  const clearError = () => {
+    if (error.type !== 'none') setError({type: 'none', message: ''});
+  };
 
   const handleLogin = async () => {
+    clearError();
+
     if (!email.trim() || !password.trim()) {
-      Alert.alert('Error', 'Please enter email and password');
+      setError({type: 'empty', message: getErrorMessage('empty')});
       return;
     }
 
@@ -32,6 +76,7 @@ const LoginScreen = ({navigation}: {navigation: LoginScreenNavigationProp}) => {
     try {
       const res = await api.login(email.trim(), password);
       await storage.setToken(res.token);
+      await storage.setRefreshToken(res.refreshToken);
       await storage.setUser(res.user);
 
       if (res.user.role === 'teacher') {
@@ -40,7 +85,8 @@ const LoginScreen = ({navigation}: {navigation: LoginScreenNavigationProp}) => {
         navigation.reset({index: 0, routes: [{name: 'Tabs'}]});
       }
     } catch (err: any) {
-      Alert.alert('Login Failed', err.message || 'Something went wrong');
+      const errorType = classifyError(err);
+      setError({type: errorType, message: getErrorMessage(errorType, err.message)});
     } finally {
       setLoading(false);
     }
@@ -48,6 +94,7 @@ const LoginScreen = ({navigation}: {navigation: LoginScreenNavigationProp}) => {
 
   const handleSocialAuth = async () => {
     setLoading(true);
+    clearError();
     try {
       let data;
       if (Platform.OS === 'ios') {
@@ -62,14 +109,16 @@ const LoginScreen = ({navigation}: {navigation: LoginScreenNavigationProp}) => {
       }
     } catch (err: any) {
       if (err.message?.includes('not available') || err.message?.includes('not configured')) {
-        Alert.alert('Not Configured', err.message);
+        setError({type: 'unknown', message: err.message});
       } else if (err.code !== 'CANCELLED') {
-        Alert.alert('Sign In Failed', err.message || 'Could not sign in');
+        setError({type: 'unknown', message: err.message || 'Social sign in failed. Please use email login instead.'});
       }
     } finally {
       setLoading(false);
     }
   };
+
+  const hasError = error.type !== 'none';
 
   return (
     <Background>
@@ -78,21 +127,28 @@ const LoginScreen = ({navigation}: {navigation: LoginScreenNavigationProp}) => {
           <Image source={require('../../../../assets/logo.png')} style={styles.logoImage} resizeMode="contain" />
         </View>
         <View style={styles.form}>
-          <TextComponent title={`Welcome back you've \n been missed!`} />
+          <TextComponent title="Welcome back!" subtitle="Sign in to continue learning" subtitleStyle={{marginBottom: '5%'}} />
+
+          {hasError && (
+            <View style={localStyles.errorBox}>
+              <Text style={localStyles.errorText}>{error.message}</Text>
+            </View>
+          )}
+
           <TextInputField
-            title={'Email *'}
-            placeholder={'Enter your email'}
+            title="Email *"
+            placeholder="Enter your email"
             value={email}
-            onChangeText={setEmail}
+            onChangeText={(t) => { setEmail(t); clearError(); }}
             keyboardType="email-address"
             autoCapitalize="none"
           />
           <TextInputField
-            title={'Password *'}
-            placeholder={'password'}
+            title="Password *"
+            placeholder="Password"
             isPassword={true}
             value={password}
-            onChangeText={setPassword}
+            onChangeText={(t) => { setPassword(t); clearError(); }}
           />
           <TouchableOpacity
             style={styles.forgotStyle}
@@ -133,5 +189,22 @@ const LoginScreen = ({navigation}: {navigation: LoginScreenNavigationProp}) => {
     </Background>
   );
 };
+
+const localStyles = StyleSheet.create({
+  errorBox: {
+    backgroundColor: '#FFF5F5',
+    borderWidth: 1,
+    borderColor: '#FED7D7',
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 16,
+  },
+  errorText: {
+    color: '#C53030',
+    fontSize: 14,
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+});
 
 export default LoginScreen;

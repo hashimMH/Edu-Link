@@ -4,8 +4,8 @@ import { Platform } from 'react-native';
 
 // Android emulator uses 10.0.2.2 to reach host machine's localhost
 // iOS simulator can use localhost directly
-const HOST = Platform.OS === 'android' ? '10.0.2.2' : 'localhost';
-const BASE_URL = `http://${HOST}:3000/api`;
+export const API_HOST = Platform.OS === 'android' ? 'http://10.0.2.2:3003' : 'http://localhost:3003';
+const BASE_URL = `${API_HOST}/api`;
 
 // ---------------------------------------------------------------------------
 // Types (ported from the original mock service + extended)
@@ -157,6 +157,7 @@ export interface TeacherAvailability {
 
 export interface AuthResponse {
   token: string;
+  refreshToken: string;
   user: {
     id: string;
     firstName: string;
@@ -188,6 +189,41 @@ function emitAuthExpired() {
   authListeners.forEach(fn => fn());
 }
 
+let isRefreshing = false;
+let refreshPromise: Promise<boolean> | null = null;
+
+async function tryRefreshToken(): Promise<boolean> {
+  if (isRefreshing && refreshPromise) return refreshPromise;
+
+  isRefreshing = true;
+  refreshPromise = (async () => {
+    try {
+      const refreshToken = await storage.getRefreshToken();
+      if (!refreshToken) return false;
+
+      const res = await fetch(`${BASE_URL.replace('/api', '')}/api/auth/refresh`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken }),
+      });
+      const data = await res.json();
+      if (!data.success) return false;
+
+      await storage.setToken(data.data.token);
+      await storage.setRefreshToken(data.data.refreshToken);
+      if (data.data.user) await storage.setUser(data.data.user);
+      return true;
+    } catch {
+      return false;
+    } finally {
+      isRefreshing = false;
+      refreshPromise = null;
+    }
+  })();
+
+  return refreshPromise;
+}
+
 async function request<T>(
   path: string,
   options: RequestInit = {},
@@ -203,13 +239,22 @@ async function request<T>(
     headers['Authorization'] = `Bearer ${token}`;
   }
 
-  const res = await fetch(`${BASE_URL}${path}`, {
-    ...options,
-    headers,
-  });
+  const doFetch = () => fetch(`${BASE_URL}${path}`, { ...options, headers });
 
-  // Token expired or invalid — clear session and force logout
-  if (res.status === 401) {
+  let res = await doFetch();
+
+  // Auto-refresh on 401
+  if (res.status === 401 && !path.includes('/auth/')) {
+    const refreshed = await tryRefreshToken();
+    if (refreshed) {
+      const newToken = await storage.getToken();
+      if (newToken) headers['Authorization'] = `Bearer ${newToken}`;
+      res = await doFetch();
+    }
+  }
+
+  // Still expired after refresh — force logout (skip auth routes, they return 401 for bad credentials)
+  if (res.status === 401 && !path.includes('/auth/')) {
     await storage.clear();
     emitAuthExpired();
     throw new Error('Session expired. Please login again.');
@@ -262,6 +307,18 @@ export const api = {
     request('/auth/google', {
       method: 'POST',
       body: JSON.stringify(data),
+    }),
+
+  forgotPassword: (email: string): Promise<{ message: string; resetToken?: string }> =>
+    request('/auth/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    }),
+
+  resetPassword: (token: string, password: string): Promise<{ message: string }> =>
+    request('/auth/reset-password', {
+      method: 'POST',
+      body: JSON.stringify({ token, password }),
     }),
 
   // ── Users ───────────────────────────────────────────────────────────

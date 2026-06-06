@@ -4,8 +4,8 @@ import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('teacher1@edulink.com');
-  const [password, setPassword] = useState('password123!');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -17,6 +17,7 @@ export default function LoginPage() {
       if (res.user.role !== 'teacher') throw new Error('This portal is for teachers only');
       localStorage.setItem('teacher_token', res.token);
       localStorage.setItem('teacher_user', JSON.stringify(res.user));
+      document.cookie = `teacher_token=${res.token}; path=/; max-age=86400; SameSite=Lax`;
       router.push('/dashboard');
     } catch (err: any) { setError(err.message); }
     finally { setLoading(false); }

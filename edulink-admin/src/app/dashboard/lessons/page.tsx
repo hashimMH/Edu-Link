@@ -1,16 +1,22 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
-import { Plus, Trash2, Edit3, X } from 'lucide-react';
+import { Plus, Trash2, Edit3, X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function LessonsPage() {
+  const [data, setData] = useState<any>(null);
   const [lessons, setLessons] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState<any>(null);
   const [form, setForm] = useState({ title: '', duration: '', description: '', userId: '', videoUrl: '' });
 
-  const load = () => api.getLessons().then(setLessons).finally(() => setLoading(false));
+  const load = (p = page) => {
+    setLoading(true);
+    const params = new URLSearchParams({ page: String(p), limit: '20' });
+    api.getLessons(params.toString()).then(d => { setData(d); setLessons(d.lessons || []); }).finally(() => setLoading(false));
+  };
   useEffect(() => { load(); }, []);
 
   const openCreate = () => { setEditing(null); setForm({ title: '', duration: '', description: '', userId: '', videoUrl: '' }); setShowModal(true); };
@@ -66,6 +72,28 @@ export default function LessonsPage() {
           </tbody>
         </table>
       </div>
+
+      {data && data.pages > 1 && (
+        <div className="flex items-center justify-center gap-3 mt-6">
+          <button
+            onClick={() => { setPage(page - 1); load(page - 1); }}
+            disabled={page <= 1}
+            className="flex items-center gap-1 px-3 py-2 rounded-lg border hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <ChevronLeft size={16} /> Prev
+          </button>
+          <span className="text-sm text-gray-600">
+            Page {data.page} of {data.pages}
+          </span>
+          <button
+            onClick={() => { setPage(page + 1); load(page + 1); }}
+            disabled={page >= data.pages}
+            className="flex items-center gap-1 px-3 py-2 rounded-lg border hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Next <ChevronRight size={16} />
+          </button>
+        </div>
+      )}
 
       {showModal && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center">

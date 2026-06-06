@@ -19,7 +19,7 @@ const server = http.createServer(app);
 // --- Socket.IO ---
 const io = new Server(server, {
   cors: {
-    origin: '*',
+    origin: env.CORS_ORIGINS,
     methods: ['GET', 'POST'],
   },
   pingTimeout: 60000,
@@ -30,12 +30,23 @@ setIO(io);
 socketHandler.init(io);
 
 // --- Security ---
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrcAttr: ["'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:"],
+      fontSrc: ["'self'", "https:", "data:"],
+    },
+  },
+}));
 app.use(cors({
   origin: env.CORS_ORIGINS,
   credentials: true,
 }));
-app.use(generalLimiter);
+// Rate limiting applied to API routes below, not globally
 
 // --- Body parsing ---
 app.use(express.json({ limit: '10mb' }));
@@ -54,6 +65,20 @@ app.set('trust proxy', 1);
 // --- Serve uploaded files ---
 serveUploads(app);
 
+// --- Password reset page (public, no auth) ---
+const resetPage = require('./controllers/resetPageController');
+app.get('/reset-password', resetPage.show);
+app.get('/reset-success', resetPage.successPage);
+app.get('/forgot-password', resetPage.forgotPage);
+
+// --- Favicon (suppress 404 noise) ---
+app.get('/favicon.ico', (req, res) => res.status(204).end());
+
+// --- Root health check ---
+app.get('/', (req, res) => {
+  res.json({ success: true, message: 'EduLink API Server', version: '1.0.0' });
+});
+
 // --- Routes ---
 app.use('/api', routes);
 
@@ -66,6 +91,37 @@ server.listen(env.PORT, () => {
   logger.info(`EduLink API running on port ${env.PORT} in ${env.NODE_ENV} mode`);
   logger.info(`WebSocket server ready`);
   logger.info(`CORS origins: ${env.CORS_ORIGINS.join(', ')}`);
+});
+
+// --- Request timeout (30s) ---
+server.timeout = 30000;
+
+// --- Graceful shutdown ---
+function shutdown(signal) {
+  logger.info(`${signal} received — shutting down gracefully...`);
+  server.close(() => {
+    logger.info('HTTP server closed');
+    io.close(() => {
+      logger.info('Socket.IO closed');
+      process.exit(0);
+    });
+  });
+  // Force exit after 10s if graceful shutdown fails
+  setTimeout(() => { logger.error('Forced shutdown after timeout'); process.exit(1); }, 10000);
+}
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));
+
+// --- Unhandled error handlers ---
+process.on('unhandledRejection', (reason, promise) => {
+  logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+process.on('uncaughtException', (err) => {
+  logger.error('Uncaught Exception:', err.message);
+  logger.error(err.stack);
+  process.exit(1);
 });
 
 module.exports = app;

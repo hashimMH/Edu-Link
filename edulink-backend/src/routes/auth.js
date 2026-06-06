@@ -12,6 +12,10 @@ router.post('/login', authLimiter, loginRules, validate, ctrl.login);
 // Firebase Auth (Google / Apple Sign-In)
 router.post('/firebase', authLimiter, firebaseCtrl.authenticate);
 
+// Refresh token
+router.post('/refresh', authLimiter, ctrl.refresh);
+router.post('/logout', ctrl.logout);
+
 // Legacy (kept for backward compat)
 router.post('/google', authLimiter, googleAuthRules, validate, ctrl.googleAuth);
 

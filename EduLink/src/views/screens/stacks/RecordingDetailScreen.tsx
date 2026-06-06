@@ -7,10 +7,8 @@ import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
 import {RootStackParamList} from '../../../models/types';
-import {api} from '../../../services/api';
+import {api, API_HOST} from '../../../services/api';
 import Video from 'react-native-video';
-
-const API_HOST = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
 
 interface RecordingDetail {
   id: string; classId: string; title: string; date: string;

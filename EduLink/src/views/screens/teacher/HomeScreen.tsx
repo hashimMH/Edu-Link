@@ -11,7 +11,7 @@ import {
   Image,
 } from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {RootStackParamList, TabParamList} from '../../../models/types';
+import {RootStackParamList, TeacherTabParamList} from '../../../models/types';
 import HomeUperView from '../components/HomeUperView';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Background from '../components/Background';
@@ -26,7 +26,7 @@ import {storage} from '../../../services/storage';
 import {connectSocket} from '../../../services/socket';
 
 type TeacherHomeScreenNavigationProp = CompositeNavigationProp<
-  BottomTabNavigationProp<TabParamList>,
+  BottomTabNavigationProp<TeacherTabParamList>,
   StackNavigationProp<RootStackParamList>
 >;
 
@@ -62,12 +62,12 @@ const HomeScreen = () => {
     load();
     storage.getUser().then(u => {
       if (u) setUserName(u.firstName);
-      else api.getProfile().then(p => setUserName(p.firstName)).catch(() => {});
+      else api.getProfile().then(p => setUserName(p.firstName)).catch(err => console.log('Profile load:', err));
     });
 
     connectSocket().then(socket => {
       socket.on('new_notification', () => setUnreadCount(prev => prev + 1));
-    }).catch(() => {});
+    }).catch(err => console.log('Socket:', err));
   }, []);
 
   if (loading || !stats) {

@@ -1,11 +1,13 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
-import { Edit3, X } from 'lucide-react';
+import { Edit3, X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function TutorsPage() {
+  const [data, setData] = useState<any>(null);
   const [tutors, setTutors] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
   const [editing, setEditing] = useState<any>(null);
   const [form, setForm] = useState({
     name: '', accent: '', country: '', description: '', videoUrl: '',
@@ -13,7 +15,11 @@ export default function TutorsPage() {
     bio: '', experienceYears: '',
   });
 
-  const load = () => api.getTutors().then(setTutors).finally(() => setLoading(false));
+  const load = (p = page) => {
+    setLoading(true);
+    const params = new URLSearchParams({ page: String(p), limit: '20' });
+    api.getTutors(params.toString()).then(d => { setData(d); setTutors(d.tutors || []); }).finally(() => setLoading(false));
+  };
   useEffect(() => { load(); }, []);
 
   const openEdit = (t: any) => {
@@ -69,6 +75,28 @@ export default function TutorsPage() {
           </div>
         ))}
       </div>
+
+      {data && data.pages > 1 && (
+        <div className="flex items-center justify-center gap-3 mt-6">
+          <button
+            onClick={() => { setPage(page - 1); load(page - 1); }}
+            disabled={page <= 1}
+            className="flex items-center gap-1 px-3 py-2 rounded-lg border hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <ChevronLeft size={16} /> Prev
+          </button>
+          <span className="text-sm text-gray-600">
+            Page {data.page} of {data.pages}
+          </span>
+          <button
+            onClick={() => { setPage(page + 1); load(page + 1); }}
+            disabled={page >= data.pages}
+            className="flex items-center gap-1 px-3 py-2 rounded-lg border hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Next <ChevronRight size={16} />
+          </button>
+        </div>
+      )}
 
       {editing && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center">

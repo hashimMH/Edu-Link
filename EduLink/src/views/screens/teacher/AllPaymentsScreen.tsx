@@ -3,8 +3,9 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
   FlatList,
+  TouchableOpacity,
+  ActivityIndicator,
   SafeAreaView,
   StatusBar,
 } from 'react-native';
@@ -60,6 +61,7 @@ const AllPaymentsScreen = () => {
       
       {isLoading ? (
         <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#10A7DA" />
           <Text style={styles.loadingText}>Loading payments...</Text>
         </View>
       ) : (

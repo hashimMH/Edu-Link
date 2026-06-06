@@ -1,11 +1,13 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
-import { Plus, Trash2, Edit3, X, ToggleLeft, ToggleRight, Power, PowerOff } from 'lucide-react';
+import { Plus, Trash2, Edit3, X, ToggleLeft, ToggleRight, Power, PowerOff, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function SubscriptionsPage() {
+  const [data, setData] = useState<any>(null);
   const [subs, setSubs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
   const [toggling, setToggling] = useState<string | null>(null);
   const [masterEnabled, setMasterEnabled] = useState(true);
   const [masterToggling, setMasterToggling] = useState(false);
@@ -13,12 +15,14 @@ export default function SubscriptionsPage() {
   const [editing, setEditing] = useState<any>(null);
   const [form, setForm] = useState({ title: '', price: 0, lessons: 0, duration: '' });
 
-  const load = async () => {
+  const load = async (p = page) => {
+    const params = new URLSearchParams({ page: String(p), limit: '20' });
     const [subsData, masterData] = await Promise.all([
-      api.getSubscriptions(),
+      api.getSubscriptions(params.toString()),
       api.getSubscriptionsMaster().catch(() => ({ enabled: true })),
     ]);
-    setSubs(subsData);
+    setData(subsData);
+    setSubs(subsData.subscriptions || []);
     setMasterEnabled(masterData.enabled);
     setLoading(false);
   };
@@ -141,6 +145,28 @@ export default function SubscriptionsPage() {
           </div>
         ))}
       </div>
+
+      {data && data.pages > 1 && (
+        <div className="flex items-center justify-center gap-3 mt-6">
+          <button
+            onClick={() => { setPage(page - 1); load(page - 1); }}
+            disabled={page <= 1}
+            className="flex items-center gap-1 px-3 py-2 rounded-lg border hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <ChevronLeft size={16} /> Prev
+          </button>
+          <span className="text-sm text-gray-600">
+            Page {data.page} of {data.pages}
+          </span>
+          <button
+            onClick={() => { setPage(page + 1); load(page + 1); }}
+            disabled={page >= data.pages}
+            className="flex items-center gap-1 px-3 py-2 rounded-lg border hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Next <ChevronRight size={16} />
+          </button>
+        </div>
+      )}
 
       {subs.length === 0 && (
         <p className="text-gray-400 text-center py-12">No subscription plans yet. Create one to start.</p>

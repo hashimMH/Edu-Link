@@ -43,7 +43,7 @@ const chatbotController = {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${apiKey}`,
-          'HTTP-Referer': 'https://edulink.app',
+          'HTTP-Referer': process.env.FRONTEND_URL || 'http://localhost:3003',
           'X-Title': 'EduLink AI Chatbot',
         },
         body: JSON.stringify({

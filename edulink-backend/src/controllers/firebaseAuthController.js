@@ -3,6 +3,16 @@ const db = require('../config/database');
 const { verifyFirebaseToken } = require('../config/firebase');
 const token = require('../utils/token');
 const ApiError = require('../utils/ApiError');
+const crypto = require('crypto');
+
+function generateTokens(userId, email, role) {
+  const accessToken = token.sign({ id: userId, email, role }, '1h');
+  const refreshToken = crypto.randomBytes(40).toString('hex');
+  const expiresAt = new Date(Date.now() + 7 * 86400000).toISOString();
+  db.prepare('INSERT INTO refresh_tokens (id, user_id, token, expires_at) VALUES (?, ?, ?, ?)')
+    .run(uuidv4(), userId, refreshToken, expiresAt);
+  return { accessToken, refreshToken };
+}
 
 const firebaseAuthController = {
   /**
@@ -32,8 +42,8 @@ const firebaseAuthController = {
 
         db.prepare(`
           INSERT INTO users (id, first_name, last_name, email, password_hash, role, avatar_url, google_id, is_active)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)
-        `).run(id, firstName, lastName, fbUser.email, '', role, fbUser.picture || null, fbUser.uid);
+          VALUES (?, ?, ?, ?, NULL, ?, ?, ?, 1)
+        `).run(id, firstName, lastName, fbUser.email, role, fbUser.picture || null, fbUser.uid);
 
         user = db.prepare('SELECT * FROM users WHERE id = ?').get(id);
 
@@ -53,17 +63,14 @@ const firebaseAuthController = {
         }
       }
 
-      // Generate our JWT
-      const jwtToken = token.sign({
-        id: user.id,
-        email: user.email,
-        role: user.role,
-      });
+      // Generate our JWT + refresh token
+      const { accessToken, refreshToken: refToken } = generateTokens(user.id, user.email, user.role);
 
       res.json({
         success: true,
         data: {
-          token: jwtToken,
+          token: accessToken,
+          refreshToken: refToken,
           user: {
             id: user.id,
             firstName: user.first_name,

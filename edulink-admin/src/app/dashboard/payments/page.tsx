@@ -1,12 +1,20 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function PaymentsPage() {
+  const [data, setData] = useState<any>(null);
   const [payments, setPayments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
 
-  useEffect(() => { api.getPayments().then(setPayments).finally(() => setLoading(false)); }, []);
+  const load = (p = page) => {
+    setLoading(true);
+    const params = new URLSearchParams({ page: String(p), limit: '20' });
+    api.getPayments(params.toString()).then(d => { setData(d); setPayments(d.payments || []); }).finally(() => setLoading(false));
+  };
+  useEffect(() => { load(); }, []);
 
   const total = payments.reduce((sum, p) => sum + p.amount, 0);
 
@@ -17,7 +25,7 @@ export default function PaymentsPage() {
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold">Payments</h2>
         <div className="bg-emerald-50 text-emerald-700 px-4 py-2 rounded-lg font-semibold">
-          Total: ${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+          Page Total: ${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}
         </div>
       </div>
       <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
@@ -46,6 +54,28 @@ export default function PaymentsPage() {
           </tbody>
         </table>
       </div>
+
+      {data && data.pages > 1 && (
+        <div className="flex items-center justify-center gap-3 mt-6">
+          <button
+            onClick={() => { setPage(page - 1); load(page - 1); }}
+            disabled={page <= 1}
+            className="flex items-center gap-1 px-3 py-2 rounded-lg border hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <ChevronLeft size={16} /> Prev
+          </button>
+          <span className="text-sm text-gray-600">
+            Page {data.page} of {data.pages}
+          </span>
+          <button
+            onClick={() => { setPage(page + 1); load(page + 1); }}
+            disabled={page >= data.pages}
+            className="flex items-center gap-1 px-3 py-2 rounded-lg border hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Next <ChevronRight size={16} />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
