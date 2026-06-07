@@ -91,7 +91,7 @@ export default function UsersPage() {
             {data?.users?.map((u: any) => (
               <tr key={u.id} className="border-t border-gray-50 hover:bg-gray-50">
                 <td className="py-3 px-4 font-medium">
-                  <button onClick={() => router.push(`/dashboard/users/${u.id}`)} className="text-primary hover:underline text-left">
+                  <button onClick={() => router.push(`/dashboard/users/detail?id=${u.id}`)} className="text-primary hover:underline text-left">
                     {u.first_name} {u.last_name}
                   </button>
                 </td>

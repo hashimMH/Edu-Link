@@ -1,0 +1,18 @@
+{
+  "projects": {
+    "default": "edulink-c7b45"
+  },
+  "targets": {
+    "edulink-c7b45": {
+      "hosting": {
+        "admin": [
+          "edulink-c7b45"
+        ],
+        "teacher": [
+          "edulink-teacher"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

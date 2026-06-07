@@ -111,7 +111,7 @@ export default function SchedulePage() {
                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColor(c.status)}`}>{c.status}</span>
                 {c.status === 'upcoming' && (
                   <>
-                    <button onClick={() => router.push('/dashboard/live-class/' + (c.appointmentId || c.id))} className="px-3 py-1 bg-green-600 text-white rounded-lg text-xs font-medium hover:bg-green-700">
+                    <button onClick={() => router.push(`/dashboard/live-class?roomId=${c.appointmentId || c.id}`)} className="px-3 py-1 bg-green-600 text-white rounded-lg text-xs font-medium hover:bg-green-700">
                       Join Class
                     </button>
                     <button onClick={() => handleCancel(c.id)} className="p-2 hover:bg-red-50 rounded-lg text-red-500"><Trash2 size={16} /></button>

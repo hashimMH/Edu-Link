@@ -1,0 +1,24 @@
+{
+  "hosting": [
+    {
+      "target": "admin",
+      "public": "edulink-admin/out",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "rewrites": [{ "source": "**", "destination": "/index.html" }],
+      "headers": [{
+        "source": "**/*.@(js|css|png|jpg|svg|ico|woff2)",
+        "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+      }]
+    },
+    {
+      "target": "teacher",
+      "public": "edulink-teacher/out",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "rewrites": [{ "source": "**", "destination": "/index.html" }],
+      "headers": [{
+        "source": "**/*.@(js|css|png|jpg|svg|ico|woff2)",
+        "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+      }]
+    }
+  ]
+}

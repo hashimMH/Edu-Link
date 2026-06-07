@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import {
   LiveKitRoom,
   useConnectionState,
@@ -51,9 +51,9 @@ function VideoRenderer({
 /*  PAGE                                                                */
 /* ================================================================== */
 export default function LiveClassPage() {
-  const params = useParams();
+  const searchParams = useSearchParams();
   const router = useRouter();
-  const roomName = params.roomId as string;
+  const roomName = searchParams.get('roomId') || '';
   const [token, setToken] = useState<string | null>(null);
   const [wsUrl, setWsUrl] = useState('');
   const [loading, setLoading] = useState(true);
