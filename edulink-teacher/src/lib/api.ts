@@ -1,4 +1,5 @@
-const API = '/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
+const API = API_URL ? `${API_URL}/api` : '/api';
 
 function getToken() {
   if (typeof window === 'undefined') return null;
@@ -45,13 +46,13 @@ export const api = {
   getPaymentSummary: () => request<any>('/payments/summary'),
 
   updateTutorProfile: (d: any) => request<any>('/teacher/tutor-profile', { method: 'PUT', body: JSON.stringify(d) }),
-  uploadVideo: (formData: FormData) => fetch('/api/teacher/upload-video', {
+  uploadVideo: (formData: FormData) => fetch(`${API}/teacher/upload-video`, {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + (typeof window !== 'undefined' ? localStorage.getItem('teacher_token') : '') },
     body: formData,
   }).then(r => r.json()),
   getCertificates: () => request<any[]>('/teacher/certificates'),
-  uploadCertificate: (formData: FormData) => fetch('/api/teacher/upload-certificate', {
+  uploadCertificate: (formData: FormData) => fetch(`${API}/teacher/upload-certificate`, {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + (typeof window !== 'undefined' ? localStorage.getItem('teacher_token') : '') },
     body: formData,

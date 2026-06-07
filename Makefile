@@ -8,11 +8,11 @@ build: build-admin build-teacher
 
 build-admin:
 	@echo "Building admin dashboard..."
-	cd edulink-admin && rm -rf .next out && npm run build
+	cd edulink-admin && rm -rf .next out && NEXT_EXPORT=true npm run build
 
 build-teacher:
 	@echo "Building teacher dashboard..."
-	cd edulink-teacher && rm -rf .next out && npm run build
+	cd edulink-teacher && rm -rf .next out && NEXT_EXPORT=true npm run build
 
 # ── Deploy ─────────────────────────────────────────────────
 deploy: build
