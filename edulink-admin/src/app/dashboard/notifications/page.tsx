@@ -22,7 +22,8 @@ export default function NotificationsPage() {
     setSending(true); setMsg('');
     try {
       const token = localStorage.getItem('admin_token');
-      const res = await fetch('/api/admin/notifications/broadcast', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003';
+      const res = await fetch(`${apiUrl}/api/admin/notifications/broadcast`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
         body: JSON.stringify({ title, body }),

@@ -65,7 +65,8 @@ export default function LiveClassPage() {
       try {
         const authToken = localStorage.getItem('teacher_token');
         if (!authToken) { setError('Not authenticated'); setLoading(false); return; }
-        const res = await fetch('/api/livekit/token', {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003';
+        const res = await fetch(`${apiUrl}/api/livekit/token`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + authToken },
           body: JSON.stringify({ roomName }),

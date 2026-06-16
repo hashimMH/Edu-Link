@@ -112,7 +112,8 @@ export default function ProfilePage() {
     setAvatarUploading(true);
     try {
       const token = localStorage.getItem('teacher_token');
-      const res = await fetch('/api/users/avatar', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003';
+      const res = await fetch(`${apiUrl}/api/users/avatar`, {
         method: 'POST',
         headers: { 'Authorization': 'Bearer ' + token },
         body: fd,

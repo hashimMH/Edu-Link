@@ -62,7 +62,8 @@ export default function SchedulePage() {
     if (!confirm('Remove this availability slot?')) return;
     try {
       const token = localStorage.getItem('teacher_token');
-      await fetch('/api/teacher/availability/' + id, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003';
+      await fetch(`${apiUrl}/api/teacher/availability/` + id, {
         method: 'DELETE',
         headers: { Authorization: 'Bearer ' + token },
       });
