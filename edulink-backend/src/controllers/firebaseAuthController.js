@@ -1,6 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
 const db = require('../config/database');
-const { verifyFirebaseToken } = require('../config/firebase');
+const { verifyFirebaseToken, getFirebaseAdmin } = require('../config/firebase');
 const token = require('../utils/token');
 const ApiError = require('../utils/ApiError');
 const crypto = require('crypto');
