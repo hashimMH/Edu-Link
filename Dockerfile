@@ -7,4 +7,4 @@ COPY edulink-backend/ .
 RUN mkdir -p /data && chown -R app:app /data /app
 USER app
 EXPOSE 8080
-CMD node migrations/run.js && node src/index.js
+CMD node migrations/run.js && node seeds/seed.js && node src/index.js

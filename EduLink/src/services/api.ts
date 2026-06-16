@@ -2,12 +2,8 @@ import { storage } from './storage';
 
 import { Platform } from 'react-native';
 
-// Backend URL — use the hosted Render backend
-// Production: use your deployed backend URL
-// Development: Android emulator → 10.0.2.2:3003, iOS simulator → localhost:3003
-const PROD_API = 'https://edu-link-9mwd.onrender.com';
-// const LOCAL_API = Platform.OS === 'android' ? 'http://10.0.2.2:3003' : 'http://localhost:3003';
-// export const API_HOST = __DEV__ ? LOCAL_API : PROD_API;
+// Backend URL — DigitalOcean
+const PROD_API = 'https://edulink-backend-zcgw9.ondigitalocean.app';
 export const API_HOST = PROD_API;
 const BASE_URL = `${API_HOST}/api`;
 
