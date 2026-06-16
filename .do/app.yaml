@@ -6,7 +6,6 @@ services:
       repo: hashimMH/Edu-Link
       branch: digital-ocean
       deploy_on_push: true
-    source_dir: edulink-backend
     dockerfile_path: Dockerfile
     instance_count: 1
     instance_size_slug: basic-xxs
