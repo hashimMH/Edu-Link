@@ -13,9 +13,10 @@ export function connectAdminSocket(): Socket {
   const token = localStorage.getItem('admin_token');
   if (!token) throw new Error('No auth token');
 
-  socket = io('http://localhost:3003', {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003';
+  socket = io(apiUrl, {
     auth: { token },
-    transports: ['websocket'],
+    transports: ['websocket', 'polling'],
     reconnection: true,
     reconnectionAttempts: 10,
     reconnectionDelay: 2000,
@@ -23,6 +24,7 @@ export function connectAdminSocket(): Socket {
 
   socket.on('connect', () => console.log('[WS] Admin connected:', socket?.id));
   socket.on('disconnect', (r) => console.log('[WS] Disconnected:', r));
+  socket.on('connect_error', (err) => console.log('[WS] Error:', err.message));
 
   return socket;
 }
