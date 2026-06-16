@@ -75,8 +75,15 @@ app.get('/forgot-password', resetPage.forgotPage);
 app.get('/favicon.ico', (req, res) => res.status(204).end());
 
 // --- Root health check ---
+const { getFirebaseAdmin } = require('./config/firebase');
 app.get('/', (req, res) => {
-  res.json({ success: true, message: 'EduLink API Server', version: '1.0.0' });
+  const fb = getFirebaseAdmin();
+  res.json({
+    success: true,
+    message: 'EduLink API Server',
+    version: '1.0.0',
+    firebase: !!fb,
+  });
 });
 
 // --- Routes ---
