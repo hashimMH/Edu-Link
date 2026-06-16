@@ -2,9 +2,7 @@ import { io, Socket } from 'socket.io-client';
 import { Platform } from 'react-native';
 import { storage } from './storage';
 
-const PROD_URL = 'https://edu-link-9mwd.onrender.com';
-// const LOCAL_HOST = Platform.OS === 'android' ? '10.0.2.2' : 'localhost';
-// const SOCKET_URL = __DEV__ ? `http://${LOCAL_HOST}:3003` : PROD_URL;
+const PROD_URL = 'https://edulink-backend-zcgw9.ondigitalocean.app';
 const SOCKET_URL = PROD_URL;
 
 let socket: Socket | null = null;

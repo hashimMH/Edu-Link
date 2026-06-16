@@ -117,5 +117,5 @@ async function authenticateWithBackend(idToken: string) {
 }
 
 function getApiHost() {
-  return Platform.OS === 'android' ? 'http://10.0.2.2:3003' : 'http://localhost:3003';
+  return 'https://edulink-backend-zcgw9.ondigitalocean.app';
 }
