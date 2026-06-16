@@ -1,5 +1,5 @@
 // Firebase Admin SDK configuration
-// Requires FIREBASE_SERVICE_ACCOUNT_PATH or FIREBASE_PROJECT_ID in .env
+// Supports: FIREBASE_SERVICE_ACCOUNT_PATH, FIREBASE_CREDENTIALS_JSON, FIREBASE_PROJECT_ID
 const admin = require('firebase-admin');
 const path = require('path');
 
@@ -8,36 +8,47 @@ let firebaseApp = null;
 function getFirebaseAdmin() {
   if (firebaseApp) return firebaseApp;
 
-  // Try service account JSON file first
-  if (process.env.FIREBASE_SERVICE_ACCOUNT_PATH) {
-    // Resolve relative to project root (two dirs up from src/config/)
-    const keyPath = path.resolve(__dirname, '../../', process.env.FIREBASE_SERVICE_ACCOUNT_PATH);
-    const serviceAccount = require(keyPath);
-    firebaseApp = admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-      projectId: serviceAccount.project_id,
-    });
-    console.log('[Firebase] Initialized with service account:', keyPath);
-    return firebaseApp;
+  try {
+    // 1. Service account JSON file
+    if (process.env.FIREBASE_SERVICE_ACCOUNT_PATH) {
+      const keyPath = path.resolve(__dirname, '../../', process.env.FIREBASE_SERVICE_ACCOUNT_PATH);
+      const serviceAccount = require(keyPath);
+      firebaseApp = admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
+        projectId: serviceAccount.project_id,
+      });
+      console.log('[Firebase] Initialized with service account file');
+      return firebaseApp;
+    }
+
+    // 2. Credentials from env var (base64 or raw JSON) — works on any platform
+    if (process.env.FIREBASE_CREDENTIALS_JSON) {
+      let creds = process.env.FIREBASE_CREDENTIALS_JSON;
+      // Try base64 decode first
+      try { creds = Buffer.from(creds, 'base64').toString('utf-8'); } catch (_) {}
+      const serviceAccount = JSON.parse(creds);
+      firebaseApp = admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
+        projectId: serviceAccount.project_id,
+      });
+      console.log('[Firebase] Initialized with credentials from env');
+      return firebaseApp;
+    }
+
+    // 3. Application default credentials (GCP only)
+    if (process.env.FIREBASE_PROJECT_ID) {
+      firebaseApp = admin.initializeApp({ projectId: process.env.FIREBASE_PROJECT_ID });
+      console.log('[Firebase] Initialized with project ID (ADC):', process.env.FIREBASE_PROJECT_ID);
+      return firebaseApp;
+    }
+  } catch (err) {
+    console.error('[Firebase] Init failed:', err.message);
   }
 
-  // Fallback: use application default credentials (works in GCP)
-  if (process.env.FIREBASE_PROJECT_ID) {
-    firebaseApp = admin.initializeApp({
-      projectId: process.env.FIREBASE_PROJECT_ID,
-    });
-    console.log('[Firebase] Initialized with project ID:', process.env.FIREBASE_PROJECT_ID);
-    return firebaseApp;
-  }
-
-  console.warn('[Firebase] Not configured — set FIREBASE_SERVICE_ACCOUNT_PATH or FIREBASE_PROJECT_ID in .env');
+  console.warn('[Firebase] Not configured — Google Sign-In disabled');
   return null;
 }
 
-/**
- * Verify a Firebase ID token and return the decoded user info.
- * Returns null if Firebase is not configured or verification fails.
- */
 async function verifyFirebaseToken(idToken) {
   const app = getFirebaseAdmin();
   if (!app) return null;
