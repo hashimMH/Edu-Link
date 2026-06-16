@@ -1,0 +1,49 @@
+name: edulink-backend
+region: nyc
+services:
+  - name: api
+    github:
+      repo: hashimMH/Edu-Link
+      branch: main
+      deploy_on_push: true
+    source_dir: edulink-backend
+    dockerfile_path: Dockerfile
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    http_port: 8080
+    health_check:
+      http_path: /
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "8080"
+      - key: DB_PATH
+        value: /data/edulink.db
+      - key: CORS_ORIGINS
+        value: https://edulink-c7b45.web.app,https://edulink-teacher.web.app
+      - key: JWT_SECRET
+        type: SECRET
+        value: edulink-prod-jwt-secret-k8x9m2p4r6
+      - key: FRONTEND_URL
+        scope: RUN_TIME
+        value: https://edulink-backend-xxxxx.ondigitalocean.app
+      - key: SMTP_HOST
+        type: SECRET
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        type: SECRET
+        value: edulink026@gmail.com
+      - key: SMTP_PASS
+        type: SECRET
+        value: ""
+      - key: LIVEKIT_API_KEY
+        type: SECRET
+        value: ""
+      - key: LIVEKIT_API_SECRET
+        type: SECRET
+        value: ""
+      - key: LIVEKIT_URL
+        value: wss://edutech-do3yznbl.livekit.cloud

@@ -1,0 +1,49 @@
+name: edulink-backend
+region: nyc
+services:
+  - name: api
+    dockerfile_path: Dockerfile
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    http_port: 8080
+    health_check:
+      http_path: /
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "8080"
+      - key: DB_PATH
+        value: /data/edulink.db
+      - key: CORS_ORIGINS
+        value: https://edulink-c7b45.web.app,https://edulink-teacher.web.app
+      - key: JWT_SECRET
+        type: SECRET
+        value: ""
+      - key: FRONTEND_URL
+        scope: RUN_TIME
+        value: ""
+      # Fill in these secrets in DO dashboard
+      - key: SMTP_HOST
+        type: SECRET
+        value: ""
+      - key: SMTP_PORT
+        type: SECRET
+        value: ""
+      - key: SMTP_USER
+        type: SECRET
+        value: ""
+      - key: SMTP_PASS
+        type: SECRET
+        value: ""
+      - key: LIVEKIT_API_KEY
+        type: SECRET
+        value: ""
+      - key: LIVEKIT_API_SECRET
+        type: SECRET
+        value: ""
+      - key: LIVEKIT_URL
+        value: wss://edutech-do3yznbl.livekit.cloud
+    volumes:
+      - name: sqlite-data
+        path: /data
