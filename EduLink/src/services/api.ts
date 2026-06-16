@@ -2,9 +2,11 @@ import { storage } from './storage';
 
 import { Platform } from 'react-native';
 
-// Android emulator uses 10.0.2.2 to reach host machine's localhost
-// iOS simulator can use localhost directly
-export const API_HOST = Platform.OS === 'android' ? 'http://10.0.2.2:3003' : 'http://localhost:3003';
+// Production: use your deployed backend URL
+// Development: Android emulator → 10.0.2.2:3003, iOS simulator → localhost:3003
+const PROD_API = 'https://edu-link-9mwd.onrender.com';
+const LOCAL_API = Platform.OS === 'android' ? 'http://10.0.2.2:3003' : 'http://localhost:3003';
+export const API_HOST = __DEV__ ? LOCAL_API : PROD_API;
 const BASE_URL = `${API_HOST}/api`;
 
 // ---------------------------------------------------------------------------

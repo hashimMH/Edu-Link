@@ -3,7 +3,7 @@ services:
     name: edulink-backend
     env: node
     buildCommand: cd edulink-backend && npm install
-    startCommand: cd edulink-backend && node src/index.js
+    startCommand: cd edulink-backend && bash startup.sh
     envVars:
       - key: NODE_ENV
         value: production
