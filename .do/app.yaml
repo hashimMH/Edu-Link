@@ -4,7 +4,7 @@ services:
   - name: api
     github:
       repo: hashimMH/Edu-Link
-      branch: main
+      branch: digital-ocean
       deploy_on_push: true
     source_dir: edulink-backend
     dockerfile_path: Dockerfile
