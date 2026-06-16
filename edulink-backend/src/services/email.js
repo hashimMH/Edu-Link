@@ -50,9 +50,10 @@ function getTransporter() {
 async function sendEmail({ to, subject, html }) {
   const transport = getTransporter();
   if (!transport) {
-    console.log('[Email] Not configured — skipping email to:', to);
-    console.log('[Email] Subject:', subject);
-    console.log('[Email] Body:', html.substring(0, 200));
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('[Email] Not configured — skipping email to:', to);
+      console.log('[Email] Subject:', subject);
+    }
     return null;
   }
 

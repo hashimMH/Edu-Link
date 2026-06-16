@@ -31,7 +31,12 @@ const NotificationScreen = () => {
     const load = async () => {
       try {
         const data = await api.getNotifications();
-        setNotifications(data);
+        const sorted = [...data].sort((a, b) => {
+          const timeA = a.time ? new Date(a.time).getTime() : 0;
+          const timeB = b.time ? new Date(b.time).getTime() : 0;
+          return timeB - timeA; // newest first
+        });
+        setNotifications(sorted);
         const socket = await connectSocket();
         socket.on('new_notification', (notif: any) => {
           setNotifications(prev => [{

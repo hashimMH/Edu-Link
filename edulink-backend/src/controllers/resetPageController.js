@@ -2,8 +2,6 @@ const db = require('../config/database');
 
 function show(req, res) {
   const { token } = req.query;
-  console.log('[ResetPage] GET /reset-password token:', token ? token.substring(0, 20) + '...' : 'MISSING');
-  console.log('[ResetPage] Full query:', JSON.stringify(req.query));
 
   if (!token) {
     return res.status(400).send(errorPage('Missing reset token.', 'Please use the link from your email.'));
@@ -14,11 +12,8 @@ function show(req, res) {
     WHERE token = ? AND used = 0 AND expires_at > datetime('now')
   `).get(token);
 
-  console.log('[ResetPage] Valid reset found:', !!reset);
-
   if (!reset) {
     const used = db.prepare('SELECT * FROM password_resets WHERE token = ? AND used = 1').get(token);
-    console.log('[ResetPage] Used check:', !!used);
     if (used) {
       return res.status(400).send(errorPage(
         'Link Already Used',
