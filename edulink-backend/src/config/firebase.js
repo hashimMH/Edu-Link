@@ -21,11 +21,16 @@ function getFirebaseAdmin() {
       return firebaseApp;
     }
 
-    // 2. Credentials from env var (base64 or raw JSON) — works on any platform
+    // 2. Credentials from env var (raw JSON or base64) — works on any platform
     if (process.env.FIREBASE_CREDENTIALS_JSON) {
       let creds = process.env.FIREBASE_CREDENTIALS_JSON;
-      // Try base64 decode first
-      try { creds = Buffer.from(creds, 'base64').toString('utf-8'); } catch (_) {}
+      // Try base64 decode first, fall back to raw JSON
+      const cleaned = creds.replace(/\\n/g, '\n').trim();
+      try {
+        const decoded = Buffer.from(cleaned, 'base64').toString('utf-8');
+        if (decoded.startsWith('{')) creds = decoded;
+      } catch (_) {}
+      if (!creds.startsWith('{')) throw new Error('Invalid credentials format');
       const serviceAccount = JSON.parse(creds);
       firebaseApp = admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),
