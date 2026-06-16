@@ -28,7 +28,11 @@ const firebaseAuthController = {
 
       // Verify the Firebase token
       const fbUser = await verifyFirebaseToken(idToken);
-      if (!fbUser) throw ApiError.unauthorized('Invalid or expired Firebase token. Firebase may not be configured.');
+      if (!fbUser) {
+        const fb = getFirebaseAdmin();
+        if (!fb) throw ApiError.unauthorized('Google Sign-In is not configured on the server.');
+        throw ApiError.unauthorized('Invalid or expired Firebase token.');
+      }
 
       // Check if user exists by email
       let user = db.prepare('SELECT * FROM users WHERE email = ?').get(fbUser.email);
