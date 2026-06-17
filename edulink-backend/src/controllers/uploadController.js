@@ -3,7 +3,14 @@ const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const pool = require('../config/database');
 const ApiError = require('../utils/ApiError');
-const { uploadToSpaces, deleteFromSpaces } = require('../config/storage');
+// NOTE: Storage module loads on demand (lazy init in storage.js)
+let storage = null;
+function getStorage() {
+  if (!storage) {
+    try { storage = require('../config/storage'); } catch(e) { console.warn('[Storage] Failed to load:', e.message); }
+  }
+  return storage;
+}
 
 // Multer memory storage — files go to S3, not disk
 const memoryUpload = multer({
@@ -44,14 +51,14 @@ const uploadController = {
       if (!tutor) return next(ApiError.forbidden('Only teachers can upload videos'));
 
       const key = `videos/${uuidv4()}${path.extname(req.file.originalname)}`;
-      const url = await uploadToSpaces(req.file.buffer, key, req.file.mimetype);
+      const url = await getStorage().uploadToSpaces(req.file.buffer, key, req.file.mimetype);
       if (!url) return next(ApiError.internal('Storage not configured'));
 
 
       // Delete old video from Spaces if exists
       const oldR = await pool.query('SELECT intro_video_url FROM tutors WHERE id = $1', [tutor.id]);
       if (oldR.rows[0]?.intro_video_url?.includes('digitaloceanspaces')) {
-        try { await deleteFromSpaces(oldR.rows[0].intro_video_url); } catch (_) {}
+        try { await getStorage().deleteFromSpaces(oldR.rows[0].intro_video_url); } catch (_) {}
       }
 
       await pool.query('UPDATE tutors SET intro_video_url = $1, updated_at = NOW() WHERE id = $2', [url, tutor.id]);
@@ -69,7 +76,7 @@ const uploadController = {
       if (!tutor) return next(ApiError.forbidden('Only teachers can upload certificates'));
 
       const key = `certificates/${uuidv4()}${path.extname(req.file.originalname)}`;
-      const url = await uploadToSpaces(req.file.buffer, key, req.file.mimetype);
+      const url = await getStorage().uploadToSpaces(req.file.buffer, key, req.file.mimetype);
       if (!url) return next(ApiError.internal('Storage not configured'));
 
 
@@ -111,7 +118,7 @@ const uploadController = {
       if (!certR.rows[0]) return next(ApiError.notFound('Certificate not found'));
 
       // Delete from Spaces
-      try { await deleteFromSpaces(certR.rows[0].file_url); } catch (_) {}
+      try { await getStorage().deleteFromSpaces(certR.rows[0].file_url); } catch (_) {}
       await pool.query('DELETE FROM teacher_certificates WHERE id = $1', [req.params.id]);
 
       res.json({ success: true });
@@ -151,14 +158,14 @@ const uploadController = {
       if (!req.file) return next(ApiError.badRequest('No image file provided'));
 
       const key = `avatars/avatar_${req.user.id}_${Date.now()}${path.extname(req.file.originalname)}`;
-      const url = await uploadToSpaces(req.file.buffer, key, req.file.mimetype);
+      const url = await getStorage().uploadToSpaces(req.file.buffer, key, req.file.mimetype);
       if (!url) return next(ApiError.internal('Storage not configured'));
 
 
       // Delete old avatar from Spaces
       const oldR = await pool.query('SELECT avatar_url FROM users WHERE id = $1', [req.user.id]);
       if (oldR.rows[0]?.avatar_url?.includes('digitaloceanspaces')) {
-        try { await deleteFromSpaces(oldR.rows[0].avatar_url); } catch (_) {}
+        try { await getStorage().deleteFromSpaces(oldR.rows[0].avatar_url); } catch (_) {}
       }
 
       await pool.query('UPDATE users SET avatar_url = $1, updated_at = NOW() WHERE id = $2', [url, req.user.id]);
