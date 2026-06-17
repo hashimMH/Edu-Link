@@ -6,7 +6,7 @@ const pool = require('../config/database');
 const ApiError = require('../utils/ApiError');
 
 // S3 helper — lazy, won't crash if aws-sdk not installed
-let _s3 = null;
+let _s3 = undefined;
 function getS3Helper() {
   if (_s3 !== undefined) return _s3;
   try {
