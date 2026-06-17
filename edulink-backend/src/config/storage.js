@@ -1,48 +1,37 @@
-const AWS = require('aws-sdk');
+const multer = require('multer');
+const path = require('path');
+const { v4: uuidv4 } = require('uuid');
+const pool = require('./database');
+const ApiError = require('../utils/ApiError');
 
-const BUCKET = process.env.SPACES_BUCKET || 'edulink-uploads';
-const spacesEndpoint = process.env.SPACES_ENDPOINT || 'nyc3.digitaloceanspaces.com';
-const CDN_URL = `https://${BUCKET}.${spacesEndpoint}`;
-
-let s3 = null;
-
+let S3 = null;
 function getS3() {
-  if (s3) return s3;
-  const key = process.env.SPACES_KEY;
-  const secret = process.env.SPACES_SECRET;
-  if (!key || !secret) {
-    console.warn('[Storage] SPACES_KEY/SPACES_SECRET not set — uploads disabled');
-    return null;
-  }
-  s3 = new AWS.S3({
-    endpoint: `https://${spacesEndpoint}`,
-    accessKeyId: key,
-    secretAccessKey: secret,
-    region: 'nyc3',
-  });
-  console.log('[Storage] DO Spaces configured');
-  return s3;
+  if (S3 !== null) return S3;
+  try {
+    const AWS = require('aws-sdk');
+    const key = process.env.SPACES_KEY;
+    const secret = process.env.SPACES_SECRET;
+    const bucket = process.env.SPACES_BUCKET || 'edulink-uploads';
+    const endpoint = process.env.SPACES_ENDPOINT || 'nyc3.digitaloceanspaces.com';
+    if (!key || !secret) { console.warn('[S3] Credentials missing'); return (S3 = false); }
+    S3 = { client: new AWS.S3({ endpoint: `https://${endpoint}`, accessKeyId: key, secretAccessKey: secret, region: 'nyc3' }), bucket, cdn: `https://${bucket}.${endpoint}` };
+    console.log('[S3] DO Spaces ready');
+    return S3;
+  } catch(e) { console.warn('[S3] Init failed:', e.message); return (S3 = false); }
 }
 
-async function uploadToSpaces(buffer, key, contentType) {
-  const client = getS3();
-  if (!client) return null;
-  await client.putObject({
-    Bucket: BUCKET,
-    Key: key,
-    Body: buffer,
-    ContentType: contentType,
-    ACL: 'public-read',
-  }).promise();
-  return `${CDN_URL}/${key}`;
+async function uploadToS3(buffer, key, contentType) {
+  const s3 = getS3();
+  if (!s3) return null;
+  await s3.client.putObject({ Bucket: s3.bucket, Key: key, Body: buffer, ContentType: contentType, ACL: 'public-read' }).promise();
+  return `${s3.cdn}/${key}`;
 }
 
-async function deleteFromSpaces(urlOrKey) {
-  const client = getS3();
-  if (!client) return;
-  let k = urlOrKey;
-  if (urlOrKey.startsWith('http')) k = new URL(urlOrKey).pathname.substring(1);
-  await client.deleteObject({ Bucket: BUCKET, Key: k }).promise();
+async function deleteFromS3(url) {
+  const s3 = getS3();
+  if (!s3) return;
+  const key = url.startsWith('http') ? new URL(url).pathname.substring(1) : url;
+  await s3.client.deleteObject({ Bucket: s3.bucket, Key: key }).promise();
 }
 
-module.exports = { getS3, uploadToSpaces, deleteFromSpaces, CDN_URL, BUCKET };
+module.exports = { getS3, uploadToS3, deleteFromS3 };
