@@ -35,6 +35,6 @@ files.forEach(f => console.log(`  - ${f}`));
     process.exit(1);
   } finally {
     client.release();
-    await pool.end();
+    // Don't call pool.end() — the server needs the pool after migrations
   }
 })();
