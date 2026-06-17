@@ -12,8 +12,8 @@ CREATE TABLE IF NOT EXISTS class_recordings (
   notes TEXT,                   -- student's personal notes
   teacher_notes TEXT,           -- notes shared by teacher
   materials TEXT,               -- JSON array of { title, url, type }
-  created_at TEXT NOT NULL DEFAULT (datetime('now')),
-  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX IF NOT EXISTS idx_recordings_student ON class_recordings(student_id, created_at DESC);

@@ -12,6 +12,7 @@ const logger = require('./utils/logger');
 const { setIO } = require('./config/io');
 const socketHandler = require('./config/socket');
 const { serveUploads } = require('./controllers/uploadController');
+const pool = require('./config/database');
 
 const app = express();
 const server = http.createServer(app);
@@ -106,10 +107,12 @@ server.timeout = 30000;
 // --- Graceful shutdown ---
 function shutdown(signal) {
   logger.info(`${signal} received — shutting down gracefully...`);
-  server.close(() => {
+  server.close(async () => {
     logger.info('HTTP server closed');
-    io.close(() => {
+    io.close(async () => {
       logger.info('Socket.IO closed');
+      await pool.end();
+      logger.info('PostgreSQL pool closed');
       process.exit(0);
     });
   });

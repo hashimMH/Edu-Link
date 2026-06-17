@@ -1,58 +1,50 @@
-const db = require('../config/database');
+const pool = require('../config/database');
 const ApiError = require('../utils/ApiError');
 
-function isSubscriptionsEnabled() {
-  const row = db.prepare(
-    "SELECT value FROM system_settings WHERE key = 'subscriptions_enabled'"
-  ).get();
+async function isSubscriptionsEnabled() {
+  const r = await pool.query("SELECT value FROM system_settings WHERE key = 'subscriptions_enabled'");
+  const row = r.rows[0];
   return row?.value === 'true';
 }
 
 const subscriptionController = {
-  /**
-   * GET /api/subscriptions
-   * Public — only returns active subscriptions when globally enabled
-   */
-  getAll(req, res, next) {
+  /** GET /api/subscriptions */
+  async getAll(req, res, next) {
     try {
-      if (!isSubscriptionsEnabled()) {
+      if (!(await isSubscriptionsEnabled())) {
         return res.json({ success: true, data: [], disabled: true });
       }
-      const subscriptions = db.prepare(
+      const r = await pool.query(
         'SELECT id, title, price, lessons, duration FROM subscriptions WHERE is_active = 1'
-      ).all();
-      res.json({ success: true, data: subscriptions });
+      );
+      res.json({ success: true, data: r.rows });
     } catch (err) {
       next(err);
     }
   },
 
-  /**
-   * GET /api/subscriptions/my
-   */
-  getMySubscriptions(req, res, next) {
+  /** GET /api/subscriptions/my */
+  async getMySubscriptions(req, res, next) {
     try {
-      const subs = db.prepare(`
-        SELECT us.id, us.status, us.started_at, us.expires_at,
-               s.title, s.price, s.lessons, s.duration
-        FROM user_subscriptions us
-        JOIN subscriptions s ON us.subscription_id = s.id
-        WHERE us.user_id = ?
-        ORDER BY us.started_at DESC
-      `).all(req.user.id);
-      res.json({ success: true, data: subs });
+      const r = await pool.query(
+        `SELECT us.id, us.status, us.started_at, us.expires_at,
+                s.title, s.price, s.lessons, s.duration
+         FROM user_subscriptions us
+         JOIN subscriptions s ON us.subscription_id = s.id
+         WHERE us.user_id = $1
+         ORDER BY us.started_at DESC`,
+        [req.user.id]
+      );
+      res.json({ success: true, data: r.rows });
     } catch (err) {
       next(err);
     }
   },
 
-  /**
-   * GET /api/subscriptions/status
-   * Returns whether subscriptions are globally enabled (for the mobile app)
-   */
-  getStatus(req, res, next) {
+  /** GET /api/subscriptions/status */
+  async getStatus(req, res, next) {
     try {
-      res.json({ success: true, data: { enabled: isSubscriptionsEnabled() } });
+      res.json({ success: true, data: { enabled: await isSubscriptionsEnabled() } });
     } catch (err) {
       next(err);
     }

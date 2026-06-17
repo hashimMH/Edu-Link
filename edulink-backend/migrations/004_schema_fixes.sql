@@ -1,35 +1,19 @@
--- Schema fixes: add 'admin' role, make password_hash nullable for Firebase auth users
--- SQLite can't alter CHECK constraints, so we recreate the table safely
--- by temporarily disabling foreign key enforcement and re-enabling after.
+-- Schema fixes: ensure the 'admin' role is included in the CHECK constraint,
+-- and that password_hash is nullable (for Firebase auth users).
+-- PostgreSQL allows altering CHECK constraints more easily than SQLite.
 
-PRAGMA foreign_keys = OFF;
+-- Drop the old CHECK constraint (name may vary, so we use a DO block)
+DO $$
+BEGIN
+  ALTER TABLE users DROP CONSTRAINT IF EXISTS users_role_check;
+EXCEPTION WHEN undefined_object THEN
+  -- constraint doesn't exist, that's OK
+END;
+$$;
 
-BEGIN TRANSACTION;
+-- Add the correct CHECK constraint
+ALTER TABLE users ADD CONSTRAINT users_role_check
+  CHECK (role IN ('student', 'teacher', 'admin'));
 
--- Step 1: Create replacement table with correct constraints
-CREATE TABLE users_new (
-  id TEXT PRIMARY KEY,
-  first_name TEXT NOT NULL,
-  last_name TEXT NOT NULL,
-  email TEXT NOT NULL UNIQUE,
-  password_hash TEXT,
-  role TEXT NOT NULL CHECK(role IN ('student', 'teacher', 'admin')),
-  avatar_url TEXT,
-  country TEXT,
-  interests TEXT,
-  google_id TEXT UNIQUE,
-  is_active INTEGER NOT NULL DEFAULT 1,
-  created_at TEXT NOT NULL DEFAULT (datetime('now')),
-  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
-);
-
--- Step 2: Copy all data
-INSERT INTO users_new SELECT * FROM users;
-
--- Step 3: Swap tables
-DROP TABLE users;
-ALTER TABLE users_new RENAME TO users;
-
-COMMIT;
-
-PRAGMA foreign_keys = ON;
+-- Ensure password_hash is nullable (it already is from 001, but confirm)
+ALTER TABLE users ALTER COLUMN password_hash DROP NOT NULL;

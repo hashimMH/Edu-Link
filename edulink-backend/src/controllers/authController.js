@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 const crypto = require('crypto');
-const db = require('../config/database');
+const pool = require('../config/database');
 const tokenUtil = require('../utils/token');
 const ApiError = require('../utils/ApiError');
 const { sendEmail } = require('../services/email');
@@ -17,25 +17,28 @@ const REFRESH_TOKEN_DAYS = 7;
  * Access token: short-lived JWT (1h)
  * Refresh token: random hex, stored in DB, valid for 7 days
  */
-function generateTokens(userId, email, role) {
+async function generateTokens(userId, email, role) {
   const accessToken = tokenUtil.sign({ id: userId, email, role }, ACCESS_TOKEN_EXPIRY);
 
   const refreshToken = crypto.randomBytes(40).toString('hex');
   const expiresAt = new Date(Date.now() + REFRESH_TOKEN_DAYS * 86400000).toISOString();
 
-  db.prepare(`
-    INSERT INTO refresh_tokens (id, user_id, token, expires_at)
-    VALUES (?, ?, ?, ?)
-  `).run(uuidv4(), userId, refreshToken, expiresAt);
+  await pool.query(
+    `INSERT INTO refresh_tokens (id, user_id, token, expires_at)
+     VALUES ($1, $2, $3, $4)`,
+    [uuidv4(), userId, refreshToken, expiresAt]
+  );
 
   return { accessToken, refreshToken };
 }
 
-function verifyRefreshToken(token) {
-  return db.prepare(`
-    SELECT * FROM refresh_tokens
-    WHERE token = ? AND revoked = 0 AND expires_at > datetime('now')
-  `).get(token);
+async function verifyRefreshToken(token) {
+  const r = await pool.query(
+    `SELECT * FROM refresh_tokens
+     WHERE token = $1 AND revoked = 0 AND expires_at > NOW()`,
+    [token]
+  );
+  return r.rows[0];
 }
 
 function formatUser(user) {
@@ -57,30 +60,33 @@ const authController = {
   /**
    * POST /api/auth/register
    */
-  register(req, res, next) {
+  async register(req, res, next) {
     try {
       const { email, password, first_name: firstName, last_name: lastName, role, interests } = req.body;
 
-      const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
-      if (existing) throw ApiError.conflict('Email already registered');
+      const existingR = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
+      if (existingR.rows[0]) throw ApiError.conflict('Email already registered');
 
       const id = uuidv4();
       const passwordHash = bcrypt.hashSync(password, SALT_ROUNDS);
       const roleVal = role || 'student';
       const interestsJSON = interests ? JSON.stringify(interests) : '[]';
 
-      db.prepare(`
-        INSERT INTO users (id, first_name, last_name, email, password_hash, role, interests)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-      `).run(id, firstName, lastName, email, passwordHash, roleVal, interestsJSON);
+      await pool.query(
+        `INSERT INTO users (id, first_name, last_name, email, password_hash, role, interests)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [id, firstName, lastName, email, passwordHash, roleVal, interestsJSON]
+      );
 
       if (roleVal === 'teacher') {
         const tutorId = uuidv4();
-        db.prepare('INSERT INTO tutors (id, user_id, name, interests) VALUES (?, ?, ?, ?)')
-          .run(tutorId, id, `${firstName} ${lastName}`, interestsJSON);
+        await pool.query(
+          'INSERT INTO tutors (id, user_id, name, interests) VALUES ($1, $2, $3, $4)',
+          [tutorId, id, `${firstName} ${lastName}`, interestsJSON]
+        );
       }
 
-      const { accessToken, refreshToken } = generateTokens(id, email, roleVal);
+      const { accessToken, refreshToken } = await generateTokens(id, email, roleVal);
 
       res.status(201).json({
         success: true,
@@ -96,21 +102,23 @@ const authController = {
   /**
    * POST /api/auth/login
    */
-  login(req, res, next) {
+  async login(req, res, next) {
     try {
       const { email, password } = req.body;
 
-      const user = db.prepare(`
-        SELECT id, first_name, last_name, email, password_hash, role, interests, avatar_url, country
-        FROM users WHERE email = ? AND is_active = 1
-      `).get(email);
+      const r = await pool.query(
+        `SELECT id, first_name, last_name, email, password_hash, role, interests, avatar_url, country
+         FROM users WHERE email = $1 AND is_active = 1`,
+        [email]
+      );
+      const user = r.rows[0];
 
       if (!user) throw ApiError.unauthorized('Invalid email or password');
 
       const valid = bcrypt.compareSync(password, user.password_hash);
       if (!valid) throw ApiError.unauthorized('Invalid email or password');
 
-      const { accessToken, refreshToken } = generateTokens(user.id, email, user.role);
+      const { accessToken, refreshToken } = await generateTokens(user.id, email, user.role);
 
       res.json({
         success: true,
@@ -123,25 +131,27 @@ const authController = {
    * POST /api/auth/refresh
    * Exchange a valid refresh token for new access + refresh tokens
    */
-  refresh(req, res, next) {
+  async refresh(req, res, next) {
     try {
       const { refreshToken } = req.body;
       if (!refreshToken) throw ApiError.badRequest('refreshToken is required');
 
-      const stored = verifyRefreshToken(refreshToken);
+      const stored = await verifyRefreshToken(refreshToken);
       if (!stored) throw ApiError.unauthorized('Invalid or expired refresh token');
 
       // Get user before revoking
-      const user = db.prepare(
-        'SELECT id, email, role, first_name, last_name, interests, avatar_url, country FROM users WHERE id = ?'
-      ).get(stored.user_id);
+      const ur = await pool.query(
+        'SELECT id, email, role, first_name, last_name, interests, avatar_url, country FROM users WHERE id = $1',
+        [stored.user_id]
+      );
+      const user = ur.rows[0];
       if (!user) throw ApiError.unauthorized('User not found');
 
       // Issue new tokens FIRST (so crash won't leave user logged out)
-      const { accessToken, refreshToken: newRefresh } = generateTokens(user.id, user.email, user.role);
+      const { accessToken, refreshToken: newRefresh } = await generateTokens(user.id, user.email, user.role);
 
       // Then revoke old token
-      db.prepare("UPDATE refresh_tokens SET revoked = 1 WHERE id = ?").run(stored.id);
+      await pool.query('UPDATE refresh_tokens SET revoked = 1 WHERE id = $1', [stored.id]);
 
       res.json({
         success: true,
@@ -154,11 +164,11 @@ const authController = {
    * POST /api/auth/logout
    * Revoke a specific refresh token
    */
-  logout(req, res, next) {
+  async logout(req, res, next) {
     try {
       const { refreshToken } = req.body;
       if (refreshToken) {
-        db.prepare("UPDATE refresh_tokens SET revoked = 1 WHERE token = ?").run(refreshToken);
+        await pool.query('UPDATE refresh_tokens SET revoked = 1 WHERE token = $1', [refreshToken]);
       }
       res.json({ success: true, message: 'Logged out' });
     } catch (err) { next(err); }
@@ -167,21 +177,23 @@ const authController = {
   /**
    * POST /api/auth/google
    */
-  googleAuth(req, res, next) {
+  async googleAuth(req, res, next) {
     try {
       const { googleId, email, firstName, lastName } = req.body;
-      let user = db.prepare('SELECT * FROM users WHERE google_id = ? OR email = ?').get(googleId, email);
+      const r = await pool.query('SELECT * FROM users WHERE google_id = $1 OR email = $2', [googleId, email]);
+      let user = r.rows[0];
 
       if (!user) {
         const id = uuidv4();
-        db.prepare(`
-          INSERT INTO users (id, first_name, last_name, email, password_hash, role, google_id, interests)
-          VALUES (?, ?, ?, ?, NULL, 'student', ?, '[]')
-        `).run(id, firstName, lastName, email, googleId);
+        await pool.query(
+          `INSERT INTO users (id, first_name, last_name, email, password_hash, role, google_id, interests)
+           VALUES ($1, $2, $3, $4, NULL, 'student', $5, '[]')`,
+          [id, firstName, lastName, email, googleId]
+        );
         user = { id, email, role: 'student', first_name: firstName, last_name: lastName };
       }
 
-      const { accessToken, refreshToken } = generateTokens(user.id, user.email, user.role);
+      const { accessToken, refreshToken } = await generateTokens(user.id, user.email, user.role);
 
       res.json({
         success: true,
@@ -196,7 +208,8 @@ const authController = {
   async forgotPassword(req, res, next) {
     try {
       const { email } = req.body;
-      const user = db.prepare('SELECT id, first_name, email FROM users WHERE email = ?').get(email);
+      const r = await pool.query('SELECT id, first_name, email FROM users WHERE email = $1', [email]);
+      const user = r.rows[0];
 
       if (!user) {
         return res.json({ success: true, message: 'If the email exists, a reset link has been sent' });
@@ -205,10 +218,11 @@ const authController = {
       const resetToken = crypto.randomBytes(32).toString('hex');
       const expiresAt = new Date(Date.now() + 3600000).toISOString();
 
-      db.prepare(`
-        INSERT INTO password_resets (id, user_id, token, expires_at)
-        VALUES (?, ?, ?, ?)
-      `).run(uuidv4(), user.id, resetToken, expiresAt);
+      await pool.query(
+        `INSERT INTO password_resets (id, user_id, token, expires_at)
+         VALUES ($1, $2, $3, $4)`,
+        [uuidv4(), user.id, resetToken, expiresAt]
+      );
 
       // Send email
       const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3003'}/reset-password?token=${resetToken}`;
@@ -250,20 +264,21 @@ const authController = {
       if (!resetToken || !password) throw ApiError.badRequest('Token and password are required');
       if (password.length < 6) throw ApiError.badRequest('Password must be at least 6 characters');
 
-      const reset = db.prepare(`
-        SELECT * FROM password_resets
-        WHERE token = ? AND used = 0 AND expires_at > datetime('now')
-      `).get(resetToken);
+      const rr = await pool.query(
+        `SELECT * FROM password_resets
+         WHERE token = $1 AND used = 0 AND expires_at > NOW()`,
+        [resetToken]
+      );
+      const reset = rr.rows[0];
 
       if (!reset) throw ApiError.badRequest('Invalid or expired reset token');
 
       const hash = bcrypt.hashSync(password, SALT_ROUNDS);
-      db.prepare("UPDATE users SET password_hash = ?, updated_at = datetime('now') WHERE id = ?")
-        .run(hash, reset.user_id);
-      db.prepare("UPDATE password_resets SET used = 1 WHERE id = ?").run(reset.id);
+      await pool.query('UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2', [hash, reset.user_id]);
+      await pool.query('UPDATE password_resets SET used = 1 WHERE id = $1', [reset.id]);
 
       // Revoke all refresh tokens for security
-      db.prepare("UPDATE refresh_tokens SET revoked = 1 WHERE user_id = ?").run(reset.user_id);
+      await pool.query('UPDATE refresh_tokens SET revoked = 1 WHERE user_id = $1', [reset.user_id]);
 
       res.json({ success: true, data: { message: 'Password has been reset successfully' } });
     } catch (err) { next(err); }

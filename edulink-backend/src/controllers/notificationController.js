@@ -1,20 +1,17 @@
-const db = require('../config/database');
+const pool = require('../config/database');
 
 const notificationController = {
-  /**
-   * GET /api/notifications
-   */
-  getAll(req, res, next) {
+  /** GET /api/notifications */
+  async getAll(req, res, next) {
     try {
-      const notifications = db.prepare(`
-        SELECT id, type, title, body, is_read, created_at
-        FROM notifications
-        WHERE user_id = ?
-        ORDER BY created_at DESC
-        LIMIT 50
-      `).all(req.user.id);
+      const r = await pool.query(
+        `SELECT id, type, title, body, is_read, created_at
+         FROM notifications WHERE user_id = $1
+         ORDER BY created_at DESC LIMIT 50`,
+        [req.user.id]
+      );
 
-      const formatted = notifications.map((n) => ({
+      const formatted = r.rows.map((n) => ({
         id: n.id,
         type: n.type,
         title: n.title,
@@ -29,28 +26,20 @@ const notificationController = {
     }
   },
 
-  /**
-   * PUT /api/notifications/:id/read
-   */
-  markRead(req, res, next) {
+  /** PUT /api/notifications/:id/read */
+  async markRead(req, res, next) {
     try {
-      db.prepare('UPDATE notifications SET is_read = 1 WHERE id = ? AND user_id = ?')
-        .run(req.params.id, req.user.id);
-
+      await pool.query('UPDATE notifications SET is_read = 1 WHERE id = $1 AND user_id = $2', [req.params.id, req.user.id]);
       res.json({ success: true });
     } catch (err) {
       next(err);
     }
   },
 
-  /**
-   * PUT /api/notifications/read-all
-   */
-  markAllRead(req, res, next) {
+  /** PUT /api/notifications/read-all */
+  async markAllRead(req, res, next) {
     try {
-      db.prepare('UPDATE notifications SET is_read = 1 WHERE user_id = ? AND is_read = 0')
-        .run(req.user.id);
-
+      await pool.query('UPDATE notifications SET is_read = 1 WHERE user_id = $1 AND is_read = 0', [req.user.id]);
       res.json({ success: true });
     } catch (err) {
       next(err);

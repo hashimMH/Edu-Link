@@ -3,11 +3,11 @@ CREATE TABLE IF NOT EXISTS legal_pages (
   key TEXT PRIMARY KEY,           -- 'privacy', 'terms'
   title TEXT NOT NULL,
   content TEXT NOT NULL DEFAULT '',
-  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 -- Default content
-INSERT OR IGNORE INTO legal_pages (key, title, content) VALUES ('privacy', 'Privacy Policy',
+INSERT INTO legal_pages (key, title, content) VALUES ('privacy', 'Privacy Policy',
 '# Privacy Policy
 
 **Last Updated: May 2026**
@@ -49,9 +49,10 @@ You can:
 
 ## 6. Contact Us
 
-For privacy-related questions, contact us at privacy@edulink.app');
+For privacy-related questions, contact us at privacy@edulink.app')
+ON CONFLICT (key) DO NOTHING;
 
-INSERT OR IGNORE INTO legal_pages (key, title, content) VALUES ('terms', 'Terms & Conditions',
+INSERT INTO legal_pages (key, title, content) VALUES ('terms', 'Terms & Conditions',
 '# Terms & Conditions
 
 **Last Updated: May 2026**
@@ -98,4 +99,5 @@ We may update these terms at any time. Continued use after changes constitutes a
 
 ## 8. Contact
 
-For questions about these terms, contact legal@edulink.app');
+For questions about these terms, contact legal@edulink.app')
+ON CONFLICT (key) DO NOTHING;

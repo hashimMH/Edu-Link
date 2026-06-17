@@ -10,8 +10,8 @@ CREATE TABLE IF NOT EXISTS users (
   interests TEXT,          -- JSON array stored as string
   google_id TEXT UNIQUE,
   is_active INTEGER NOT NULL DEFAULT 1,
-  created_at TEXT NOT NULL DEFAULT (datetime('now')),
-  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS tutors (
@@ -26,8 +26,8 @@ CREATE TABLE IF NOT EXISTS tutors (
   is_available INTEGER NOT NULL DEFAULT 1,
   -- denormalized interests for fast filtering
   interests TEXT,          -- JSON array
-  created_at TEXT NOT NULL DEFAULT (datetime('now')),
-  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS tutor_availability (
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS tutor_availability (
   start_time TEXT NOT NULL,     -- HH:MM format
   end_time TEXT NOT NULL,       -- HH:MM format
   is_recurring INTEGER NOT NULL DEFAULT 1,
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS subscriptions (
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS subscriptions (
   lessons INTEGER NOT NULL,
   duration TEXT NOT NULL,       -- e.g. "28 hrs 40 mins"
   is_active INTEGER NOT NULL DEFAULT 1,
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS user_subscriptions (
@@ -55,9 +55,9 @@ CREATE TABLE IF NOT EXISTS user_subscriptions (
   user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   subscription_id TEXT NOT NULL REFERENCES subscriptions(id),
   status TEXT NOT NULL DEFAULT 'active' CHECK(status IN ('active', 'expired', 'cancelled')),
-  started_at TEXT NOT NULL DEFAULT (datetime('now')),
-  expires_at TEXT,
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  started_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  expires_at TIMESTAMP,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS appointments (
@@ -69,8 +69,8 @@ CREATE TABLE IF NOT EXISTS appointments (
   start_time TEXT NOT NULL,     -- HH:MM
   end_time TEXT NOT NULL,       -- HH:MM
   status TEXT NOT NULL DEFAULT 'upcoming' CHECK(status IN ('upcoming', 'completed', 'cancelled')),
-  created_at TEXT NOT NULL DEFAULT (datetime('now')),
-  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS teacher_classes (
@@ -83,8 +83,8 @@ CREATE TABLE IF NOT EXISTS teacher_classes (
   time TEXT NOT NULL,
   duration TEXT,
   status TEXT NOT NULL DEFAULT 'upcoming' CHECK(status IN ('upcoming', 'completed', 'cancelled')),
-  created_at TEXT NOT NULL DEFAULT (datetime('now')),
-  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS messages (
@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS messages (
   chat_id TEXT NOT NULL,
   text TEXT NOT NULL,
   is_read INTEGER NOT NULL DEFAULT 0,
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 -- Index for fetching conversations efficiently
@@ -105,8 +105,8 @@ CREATE TABLE IF NOT EXISTS conversations (
   user1_id TEXT NOT NULL REFERENCES users(id),
   user2_id TEXT NOT NULL REFERENCES users(id),
   last_message TEXT,
-  last_message_at TEXT,
-  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  last_message_at TIMESTAMP,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   UNIQUE(user1_id, user2_id)
 );
 
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS lessons (
   duration TEXT NOT NULL,
   description TEXT,
   video_url TEXT,
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS payments (
@@ -129,7 +129,7 @@ CREATE TABLE IF NOT EXISTS payments (
   card_last_four TEXT,
   date TEXT NOT NULL,
   status TEXT NOT NULL DEFAULT 'completed' CHECK(status IN ('completed', 'pending', 'failed')),
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS reviews (
@@ -141,7 +141,7 @@ CREATE TABLE IF NOT EXISTS reviews (
   date TEXT NOT NULL,
   time TEXT,
   comment TEXT,
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS notifications (
@@ -151,7 +151,7 @@ CREATE TABLE IF NOT EXISTS notifications (
   title TEXT NOT NULL,
   body TEXT,
   is_read INTEGER NOT NULL DEFAULT 0,
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications(user_id, created_at);

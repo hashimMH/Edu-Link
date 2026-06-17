@@ -1,20 +1,18 @@
-const db = require('../config/database');
+const pool = require('../config/database');
 
 const paymentController = {
-  /**
-   * GET /api/payments
-   * Get all payments for current user
-   */
-  getAll(req, res, next) {
+  /** GET /api/payments */
+  async getAll(req, res, next) {
     try {
-      const payments = db.prepare(`
-        SELECT id, type, amount, card_type, card_last_four, date, status
-        FROM payments
-        WHERE user_id = ?
-        ORDER BY date DESC
-      `).all(req.user.id);
+      const r = await pool.query(
+        `SELECT id, type, amount, card_type, card_last_four, date, status
+         FROM payments
+         WHERE user_id = $1
+         ORDER BY date DESC`,
+        [req.user.id]
+      );
 
-      const formatted = payments.map((p) => ({
+      const formatted = r.rows.map((p) => ({
         id: p.id,
         type: p.type,
         amount: p.amount,
@@ -30,37 +28,30 @@ const paymentController = {
     }
   },
 
-  /**
-   * GET /api/payments/summary
-   * Get balance, income, pending
-   */
-  getSummary(req, res, next) {
+  /** GET /api/payments/summary */
+  async getSummary(req, res, next) {
     try {
-      const completed = db.prepare(`
-        SELECT COALESCE(SUM(amount), 0) AS total
-        FROM payments WHERE user_id = ? AND status = 'completed'
-      `).get(req.user.id);
-
-      const pending = db.prepare(`
-        SELECT COALESCE(SUM(amount), 0) AS total
-        FROM payments WHERE user_id = ? AND status = 'pending'
-      `).get(req.user.id);
-
-      // Latest 4 payments for earnings screen
-      const latest = db.prepare(`
-        SELECT id, type, amount, card_type, card_last_four, date, status
-        FROM payments
-        WHERE user_id = ?
-        ORDER BY date DESC LIMIT 4
-      `).all(req.user.id);
+      const completedR = await pool.query(
+        "SELECT COALESCE(SUM(amount), 0) AS total FROM payments WHERE user_id = $1 AND status = 'completed'",
+        [req.user.id]
+      );
+      const pendingR = await pool.query(
+        "SELECT COALESCE(SUM(amount), 0) AS total FROM payments WHERE user_id = $1 AND status = 'pending'",
+        [req.user.id]
+      );
+      const latestR = await pool.query(
+        `SELECT id, type, amount, card_type, card_last_four, date, status
+         FROM payments WHERE user_id = $1 ORDER BY date DESC LIMIT 4`,
+        [req.user.id]
+      );
 
       res.json({
         success: true,
         data: {
-          balance: completed.total,
-          income: completed.total,
-          pending: pending.total,
-          payments: latest.map((p) => ({
+          balance: parseFloat(completedR.rows[0].total),
+          income: parseFloat(completedR.rows[0].total),
+          pending: parseFloat(pendingR.rows[0].total),
+          payments: latestR.rows.map((p) => ({
             id: p.id,
             type: p.type,
             amount: p.amount,

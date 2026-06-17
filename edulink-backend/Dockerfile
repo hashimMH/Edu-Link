@@ -17,9 +17,6 @@ COPY --from=builder /app/node_modules ./node_modules
 # Copy app source
 COPY . .
 
-# Persistent SQLite data directory
-RUN mkdir -p /data && chown -R app:app /data
-
 # Switch to non-root
 USER app
 
@@ -27,4 +24,5 @@ USER app
 EXPOSE 8080
 
 # Start with migrations + server
+# DATABASE_URL should be set via environment (e.g. postgresql://user:pass@host:5432/edulink)
 CMD node migrations/run.js && node src/index.js

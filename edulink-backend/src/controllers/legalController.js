@@ -1,15 +1,13 @@
-const db = require('../config/database');
+const pool = require('../config/database');
 const ApiError = require('../utils/ApiError');
 
 const legalController = {
-  /**
-   * GET /api/legal/:key
-   * Public — returns privacy policy or terms
-   */
-  get(req, res, next) {
+  /** GET /api/legal/:key */
+  async get(req, res, next) {
     try {
       const { key } = req.params;
-      const page = db.prepare('SELECT * FROM legal_pages WHERE key = ?').get(key);
+      const r = await pool.query('SELECT * FROM legal_pages WHERE key = $1', [key]);
+      const page = r.rows[0];
       if (!page) throw ApiError.notFound('Page not found');
       res.json({ success: true, data: page });
     } catch (err) {
@@ -17,14 +15,11 @@ const legalController = {
     }
   },
 
-  /**
-   * GET /api/legal
-   * Public — returns both pages
-   */
-  list(req, res, next) {
+  /** GET /api/legal */
+  async list(req, res, next) {
     try {
-      const pages = db.prepare('SELECT key, title, updated_at FROM legal_pages').all();
-      res.json({ success: true, data: pages });
+      const r = await pool.query('SELECT key, title, updated_at FROM legal_pages');
+      res.json({ success: true, data: r.rows });
     } catch (err) {
       next(err);
     }

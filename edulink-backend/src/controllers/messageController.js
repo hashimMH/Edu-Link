@@ -1,38 +1,38 @@
 const { v4: uuidv4 } = require('uuid');
-const db = require('../config/database');
+const pool = require('../config/database');
 const ApiError = require('../utils/ApiError');
 const { emitToUser } = require('../config/socket');
 
 const messageController = {
-  /**
-   * GET /api/messages
-   * Get all conversations for the current user
-   */
-  getConversations(req, res, next) {
+  /** GET /api/messages */
+  async getConversations(req, res, next) {
     try {
-      const conversations = db.prepare(`
-        SELECT c.id, c.last_message, c.last_message_at,
-               CASE WHEN c.user1_id = ? THEN c.user2_id ELSE c.user1_id END AS other_user_id
-        FROM conversations c
-        WHERE c.user1_id = ? OR c.user2_id = ?
-        ORDER BY c.last_message_at DESC NULLS LAST
-      `).all(req.user.id, req.user.id, req.user.id);
+      const r = await pool.query(
+        `SELECT c.id, c.last_message, c.last_message_at,
+                CASE WHEN c.user1_id = $1 THEN c.user2_id ELSE c.user1_id END AS other_user_id
+         FROM conversations c
+         WHERE c.user1_id = $2 OR c.user2_id = $3
+         ORDER BY c.last_message_at DESC NULLS LAST`,
+        [req.user.id, req.user.id, req.user.id]
+      );
 
       // Enrich with user info
-      const enriched = conversations.map((conv) => {
-        const other = db.prepare(
-          'SELECT id, first_name, last_name, avatar_url FROM users WHERE id = ?'
-        ).get(conv.other_user_id);
+      const enriched = await Promise.all(r.rows.map(async (conv) => {
+        const otherR = await pool.query(
+          'SELECT id, first_name, last_name, avatar_url FROM users WHERE id = $1',
+          [conv.other_user_id]
+        );
+        const other = otherR.rows[0];
 
         return {
-          id: conv.other_user_id,  // Use other user id as the "message list" id for frontend compat
+          id: conv.other_user_id,
           chatId: conv.id,
           name: other ? `${other.first_name} ${other.last_name}` : 'Unknown',
           message: conv.last_message || '',
           time: conv.last_message_at ? formatTime(conv.last_message_at) : '',
           avatarPath: other?.avatar_url || '',
         };
-      });
+      }));
 
       res.json({ success: true, data: enriched });
     } catch (err) {
@@ -40,25 +40,25 @@ const messageController = {
     }
   },
 
-  /**
-   * GET /api/messages/:chatId
-   * Get messages in a conversation
-   */
-  getChatMessages(req, res, next) {
+  /** GET /api/messages/:chatId */
+  async getChatMessages(req, res, next) {
     try {
       const { chatId } = req.params;
-      const messages = db.prepare(`
-        SELECT m.id, m.text, m.sender_id, m.created_at
-        FROM messages m
-        WHERE m.chat_id = ?
-        ORDER BY m.created_at ASC
-      `).all(chatId);
+      const r = await pool.query(
+        `SELECT m.id, m.text, m.sender_id, m.created_at
+         FROM messages m
+         WHERE m.chat_id = $1
+         ORDER BY m.created_at ASC`,
+        [chatId]
+      );
 
       // Mark as read
-      db.prepare("UPDATE messages SET is_read = 1 WHERE chat_id = ? AND receiver_id = ? AND is_read = 0")
-        .run(chatId, req.user.id);
+      await pool.query(
+        'UPDATE messages SET is_read = 1 WHERE chat_id = $1 AND receiver_id = $2 AND is_read = 0',
+        [chatId, req.user.id]
+      );
 
-      const formatted = messages.map((m) => ({
+      const formatted = r.rows.map((m) => ({
         id: m.id,
         text: m.text,
         time: formatTime(m.created_at),
@@ -71,69 +71,67 @@ const messageController = {
     }
   },
 
-  /**
-   * POST /api/messages
-   * Send a message (creates or appends to a conversation)
-   */
-  sendMessage(req, res, next) {
+  /** POST /api/messages */
+  async sendMessage(req, res, next) {
     try {
       const { receiverId, text } = req.body;
 
-      if (!receiverId || !text) {
-        throw ApiError.badRequest('receiverId and text are required');
-      }
+      if (!receiverId || !text) throw ApiError.badRequest('receiverId and text are required');
 
-      // Validate receiver exists
-      const receiver = db.prepare('SELECT id FROM users WHERE id = ?').get(receiverId);
-      if (!receiver) {
-        throw ApiError.notFound('Receiver not found');
-      }
+      const receiverR = await pool.query('SELECT id FROM users WHERE id = $1', [receiverId]);
+      if (!receiverR.rows[0]) throw ApiError.notFound('Receiver not found');
 
       // Find or create conversation
-      let conv = db.prepare(`
-        SELECT id FROM conversations
-        WHERE (user1_id = ? AND user2_id = ?) OR (user1_id = ? AND user2_id = ?)
-      `).get(req.user.id, receiverId, receiverId, req.user.id);
+      const convR = await pool.query(
+        `SELECT id FROM conversations
+         WHERE (user1_id = $1 AND user2_id = $2) OR (user1_id = $3 AND user2_id = $4)`,
+        [req.user.id, receiverId, receiverId, req.user.id]
+      );
+      let conv = convR.rows[0];
 
       let chatId;
       if (!conv) {
         chatId = uuidv4();
-        db.prepare(`
-          INSERT INTO conversations (id, user1_id, user2_id, last_message, last_message_at)
-          VALUES (?, ?, ?, ?, datetime('now'))
-        `).run(chatId, req.user.id, receiverId, text);
+        await pool.query(
+          `INSERT INTO conversations (id, user1_id, user2_id, last_message, last_message_at)
+           VALUES ($1, $2, $3, $4, NOW())`,
+          [chatId, req.user.id, receiverId, text]
+        );
       } else {
         chatId = conv.id;
-        db.prepare(`
-          UPDATE conversations SET last_message = ?, last_message_at = datetime('now') WHERE id = ?
-        `).run(text, chatId);
+        await pool.query(
+          'UPDATE conversations SET last_message = $1, last_message_at = NOW() WHERE id = $2',
+          [text, chatId]
+        );
       }
 
       const msgId = uuidv4();
-      db.prepare(`
-        INSERT INTO messages (id, sender_id, receiver_id, chat_id, text)
-        VALUES (?, ?, ?, ?, ?)
-      `).run(msgId, req.user.id, receiverId, chatId, text);
+      await pool.query(
+        `INSERT INTO messages (id, sender_id, receiver_id, chat_id, text)
+         VALUES ($1, $2, $3, $4, $5)`,
+        [msgId, req.user.id, receiverId, chatId, text]
+      );
 
-      // Auto-create notification for receiver with sender name and ID
-      const sender = db.prepare('SELECT first_name, last_name FROM users WHERE id = ?').get(req.user.id);
+      // Auto-create notification
+      const senderR = await pool.query('SELECT first_name, last_name FROM users WHERE id = $1', [req.user.id]);
+      const sender = senderR.rows[0];
       const senderName = `${sender.first_name} ${sender.last_name}`;
       const notifBody = JSON.stringify({ text: text.substring(0, 200), chatId, senderName, senderId: req.user.id });
-      db.prepare(`
-        INSERT INTO notifications (id, user_id, type, title, body)
-        VALUES (?, ?, 'message', ?, ?)
-      `).run(uuidv4(), receiverId, `Message from ${senderName}`, notifBody);
+      await pool.query(
+        `INSERT INTO notifications (id, user_id, type, title, body)
+         VALUES ($1, $2, 'message', $3, $4)`,
+        [uuidv4(), receiverId, `Message from ${senderName}`, notifBody]
+      );
 
-      // Real-time: emit to receiver
+      // Real-time
       emitToUser(receiverId, 'new_message', {
         id: msgId,
         text,
         chatId,
         time: formatTime(new Date().toISOString()),
-        senderName: `${sender.first_name} ${sender.last_name}`,
+        senderName,
       });
 
-      // Also emit notification event
       emitToUser(receiverId, 'new_notification', {
         id: uuidv4(),
         type: 'message',

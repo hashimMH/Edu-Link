@@ -1,32 +1,28 @@
 const { v4: uuidv4 } = require('uuid');
-const db = require('../config/database');
+const pool = require('../config/database');
 const { verifyFirebaseToken, getFirebaseAdmin } = require('../config/firebase');
 const token = require('../utils/token');
 const ApiError = require('../utils/ApiError');
 const crypto = require('crypto');
 
-function generateTokens(userId, email, role) {
+async function generateTokens(userId, email, role) {
   const accessToken = token.sign({ id: userId, email, role }, '1h');
   const refreshToken = crypto.randomBytes(40).toString('hex');
   const expiresAt = new Date(Date.now() + 7 * 86400000).toISOString();
-  db.prepare('INSERT INTO refresh_tokens (id, user_id, token, expires_at) VALUES (?, ?, ?, ?)')
-    .run(uuidv4(), userId, refreshToken, expiresAt);
+  await pool.query(
+    'INSERT INTO refresh_tokens (id, user_id, token, expires_at) VALUES ($1, $2, $3, $4)',
+    [uuidv4(), userId, refreshToken, expiresAt]
+  );
   return { accessToken, refreshToken };
 }
 
 const firebaseAuthController = {
-  /**
-   * POST /api/auth/firebase
-   * Authenticate with a Firebase ID token (from Google/Apple Sign-In)
-   * Body: { idToken, role? }
-   * If user doesn't exist, creates one. Always returns our JWT + user data.
-   */
+  /** POST /api/auth/firebase */
   async authenticate(req, res, next) {
     try {
       const { idToken, role = 'student' } = req.body;
       if (!idToken) throw ApiError.badRequest('idToken is required');
 
-      // Verify the Firebase token
       const fbUser = await verifyFirebaseToken(idToken);
       if (!fbUser) {
         const fb = getFirebaseAdmin();
@@ -35,40 +31,41 @@ const firebaseAuthController = {
       }
 
       // Check if user exists by email
-      let user = db.prepare('SELECT * FROM users WHERE email = ?').get(fbUser.email);
+      const existingR = await pool.query('SELECT * FROM users WHERE email = $1', [fbUser.email]);
+      let user = existingR.rows[0];
 
       if (!user) {
-        // Create new user
         const id = uuidv4();
         const nameParts = fbUser.name ? fbUser.name.split(' ') : [fbUser.email.split('@')[0], ''];
         const firstName = nameParts[0] || 'User';
         const lastName = nameParts.slice(1).join(' ') || '';
 
-        db.prepare(`
-          INSERT INTO users (id, first_name, last_name, email, password_hash, role, avatar_url, google_id, is_active)
-          VALUES (?, ?, ?, ?, NULL, ?, ?, ?, 1)
-        `).run(id, firstName, lastName, fbUser.email, role, fbUser.picture || null, fbUser.uid);
+        await pool.query(
+          `INSERT INTO users (id, first_name, last_name, email, password_hash, role, avatar_url, google_id, is_active)
+           VALUES ($1, $2, $3, $4, NULL, $5, $6, $7, 1)`,
+          [id, firstName, lastName, fbUser.email, role, fbUser.picture || null, fbUser.uid]
+        );
 
-        user = db.prepare('SELECT * FROM users WHERE id = ?').get(id);
+        const newUserR = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
+        user = newUserR.rows[0];
 
-        // If role is teacher, create tutor profile
         if (role === 'teacher') {
           const tutorId = uuidv4();
-          db.prepare('INSERT INTO tutors (id, user_id, name, interests) VALUES (?, ?, ?, ?)')
-            .run(tutorId, id, `${firstName} ${lastName}`, '[]');
+          await pool.query(
+            'INSERT INTO tutors (id, user_id, name, interests) VALUES ($1, $2, $3, $4)',
+            [tutorId, id, `${firstName} ${lastName}`, '[]']
+          );
         }
       } else {
-        // Update google_id and avatar if not set
         if (!user.google_id && fbUser.uid) {
-          db.prepare('UPDATE users SET google_id = ? WHERE id = ?').run(fbUser.uid, user.id);
+          await pool.query('UPDATE users SET google_id = $1 WHERE id = $2', [fbUser.uid, user.id]);
         }
         if (!user.avatar_url && fbUser.picture) {
-          db.prepare('UPDATE users SET avatar_url = ? WHERE id = ?').run(fbUser.picture, user.id);
+          await pool.query('UPDATE users SET avatar_url = $1 WHERE id = $2', [fbUser.picture, user.id]);
         }
       }
 
-      // Generate our JWT + refresh token
-      const { accessToken, refreshToken: refToken } = generateTokens(user.id, user.email, user.role);
+      const { accessToken, refreshToken: refToken } = await generateTokens(user.id, user.email, user.role);
 
       res.json({
         success: true,

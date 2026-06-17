@@ -1,7 +1,7 @@
 -- Add new columns to tutors
-ALTER TABLE tutors ADD COLUMN bio TEXT;
-ALTER TABLE tutors ADD COLUMN experience_years INTEGER DEFAULT 0;
-ALTER TABLE tutors ADD COLUMN intro_video_url TEXT;
+ALTER TABLE tutors ADD COLUMN IF NOT EXISTS bio TEXT;
+ALTER TABLE tutors ADD COLUMN IF NOT EXISTS experience_years INTEGER DEFAULT 0;
+ALTER TABLE tutors ADD COLUMN IF NOT EXISTS intro_video_url TEXT;
 
 -- Certificates table
 CREATE TABLE IF NOT EXISTS teacher_certificates (
@@ -9,5 +9,5 @@ CREATE TABLE IF NOT EXISTS teacher_certificates (
   tutor_id TEXT NOT NULL REFERENCES tutors(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
   file_url TEXT NOT NULL,
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );

@@ -2,7 +2,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
-const db = require('../config/database');
+const pool = require('../config/database');
 const ApiError = require('../utils/ApiError');
 
 // Ensure upload directories exist
@@ -31,7 +31,7 @@ const videoStorage = multer.diskStorage({
 
 const videoUpload = multer({
   storage: videoStorage,
-  limits: { fileSize: 100 * 1024 * 1024 }, // 100MB
+  limits: { fileSize: 100 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     const allowed = ['video/mp4', 'video/webm', 'video/quicktime', 'video/x-msvideo'];
     if (allowed.includes(file.mimetype)) cb(null, true);
@@ -50,7 +50,7 @@ const certStorage = multer.diskStorage({
 
 const certUpload = multer({
   storage: certStorage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+  limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     const allowed = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
     if (allowed.includes(file.mimetype)) cb(null, true);
@@ -69,7 +69,7 @@ const avatarStorage = multer.diskStorage({
 
 const avatarUpload = multer({
   storage: avatarStorage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
     if (allowed.includes(file.mimetype)) cb(null, true);
@@ -78,9 +78,7 @@ const avatarUpload = multer({
 }).single('avatar');
 
 const uploadController = {
-  /**
-   * POST /api/teacher/upload-video
-   */
+  /** POST /api/teacher/upload-video */
   uploadVideo(req, res, next) {
     videoUpload(req, res, async (err) => {
       if (err) {
@@ -89,20 +87,18 @@ const uploadController = {
       }
       if (!req.file) return next(ApiError.badRequest('No video file provided'));
 
-      const tutor = db.prepare('SELECT id FROM tutors WHERE user_id = ?').get(req.user.id);
+      const tutorR = await pool.query('SELECT id FROM tutors WHERE user_id = $1', [req.user.id]);
+      const tutor = tutorR.rows[0];
       if (!tutor) return next(ApiError.forbidden('Only teachers can upload videos'));
 
       const url = `/uploads/videos/${req.file.filename}`;
-      db.prepare('UPDATE tutors SET intro_video_url = ?, updated_at = datetime(\'now\') WHERE id = ?')
-        .run(url, tutor.id);
+      await pool.query('UPDATE tutors SET intro_video_url = $1, updated_at = NOW() WHERE id = $2', [url, tutor.id]);
 
       res.json({ success: true, data: { url } });
     });
   },
 
-  /**
-   * POST /api/teacher/upload-certificate
-   */
+  /** POST /api/teacher/upload-certificate */
   uploadCertificate(req, res, next) {
     certUpload(req, res, async (err) => {
       if (err) {
@@ -111,96 +107,98 @@ const uploadController = {
       }
       if (!req.file) return next(ApiError.badRequest('No file provided'));
 
-      const tutor = db.prepare('SELECT id FROM tutors WHERE user_id = ?').get(req.user.id);
+      const tutorR = await pool.query('SELECT id FROM tutors WHERE user_id = $1', [req.user.id]);
+      const tutor = tutorR.rows[0];
       if (!tutor) return next(ApiError.forbidden('Only teachers can upload certificates'));
 
       const title = req.body.title || 'Certificate';
       const url = `/uploads/certificates/${req.file.filename}`;
       const id = uuidv4();
 
-      db.prepare('INSERT INTO teacher_certificates (id, tutor_id, title, file_url) VALUES (?, ?, ?, ?)')
-        .run(id, tutor.id, title, url);
+      await pool.query(
+        'INSERT INTO teacher_certificates (id, tutor_id, title, file_url) VALUES ($1, $2, $3, $4)',
+        [id, tutor.id, title, url]
+      );
 
       res.status(201).json({ success: true, data: { id, title, url } });
     });
   },
 
-  /**
-   * GET /api/teacher/certificates
-   */
-  getCertificates(req, res, next) {
+  /** GET /api/teacher/certificates */
+  async getCertificates(req, res, next) {
     try {
-      const tutor = db.prepare('SELECT id FROM tutors WHERE user_id = ?').get(req.user.id);
+      const tutorR = await pool.query('SELECT id FROM tutors WHERE user_id = $1', [req.user.id]);
+      const tutor = tutorR.rows[0];
       if (!tutor) return next(ApiError.forbidden('Only teachers have certificates'));
 
-      const certs = db.prepare('SELECT id, title, file_url, created_at FROM teacher_certificates WHERE tutor_id = ? ORDER BY created_at DESC')
-        .all(tutor.id);
+      const certs = await pool.query(
+        'SELECT id, title, file_url, created_at FROM teacher_certificates WHERE tutor_id = $1 ORDER BY created_at DESC',
+        [tutor.id]
+      );
 
-      res.json({ success: true, data: certs });
+      res.json({ success: true, data: certs.rows });
     } catch (err) {
       next(err);
     }
   },
 
-  /**
-   * DELETE /api/teacher/certificates/:id
-   */
-  deleteCertificate(req, res, next) {
+  /** DELETE /api/teacher/certificates/:id */
+  async deleteCertificate(req, res, next) {
     try {
-      const tutor = db.prepare('SELECT id FROM tutors WHERE user_id = ?').get(req.user.id);
+      const tutorR = await pool.query('SELECT id FROM tutors WHERE user_id = $1', [req.user.id]);
+      const tutor = tutorR.rows[0];
       if (!tutor) return next(ApiError.forbidden('Only teachers can manage certificates'));
 
-      const cert = db.prepare('SELECT * FROM teacher_certificates WHERE id = ? AND tutor_id = ?')
-        .get(req.params.id, tutor.id);
+      const certR = await pool.query(
+        'SELECT * FROM teacher_certificates WHERE id = $1 AND tutor_id = $2',
+        [req.params.id, tutor.id]
+      );
+      const cert = certR.rows[0];
       if (!cert) return next(ApiError.notFound('Certificate not found'));
 
       // Delete file
       const filePath = path.join(uploadsDir, cert.file_url);
       if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
 
-      db.prepare('DELETE FROM teacher_certificates WHERE id = ?').run(req.params.id);
+      await pool.query('DELETE FROM teacher_certificates WHERE id = $1', [req.params.id]);
       res.json({ success: true });
     } catch (err) {
       next(err);
     }
   },
 
-  /**
-   * PUT /api/teacher/tutor-profile
-   * Update tutor bio, experience, video URL, accent, description, interests
-   */
-  updateTutorProfile(req, res, next) {
+  /** PUT /api/teacher/tutor-profile */
+  async updateTutorProfile(req, res, next) {
     try {
-      const tutor = db.prepare('SELECT id FROM tutors WHERE user_id = ?').get(req.user.id);
+      const tutorR = await pool.query('SELECT id FROM tutors WHERE user_id = $1', [req.user.id]);
+      const tutor = tutorR.rows[0];
       if (!tutor) return next(ApiError.forbidden('Only teachers have tutor profiles'));
 
       const { bio, experienceYears, accent, description, interests, videoUrl } = req.body;
       const updates = [];
       const params = [];
+      let paramIdx = 1;
 
-      if (bio !== undefined) { updates.push('bio = ?'); params.push(bio); }
-      if (experienceYears !== undefined) { updates.push('experience_years = ?'); params.push(parseInt(experienceYears) || 0); }
-      if (accent !== undefined) { updates.push('accent = ?'); params.push(accent); }
-      if (description !== undefined) { updates.push('description = ?'); params.push(description); }
-      if (videoUrl !== undefined) { updates.push('intro_video_url = ?'); params.push(videoUrl); }
-      if (interests) { updates.push('interests = ?'); params.push(JSON.stringify(interests)); }
+      if (bio !== undefined) { updates.push(`bio = $${paramIdx++}`); params.push(bio); }
+      if (experienceYears !== undefined) { updates.push(`experience_years = $${paramIdx++}`); params.push(parseInt(experienceYears) || 0); }
+      if (accent !== undefined) { updates.push(`accent = $${paramIdx++}`); params.push(accent); }
+      if (description !== undefined) { updates.push(`description = $${paramIdx++}`); params.push(description); }
+      if (videoUrl !== undefined) { updates.push(`intro_video_url = $${paramIdx++}`); params.push(videoUrl); }
+      if (interests) { updates.push(`interests = $${paramIdx++}`); params.push(JSON.stringify(interests)); }
 
       if (updates.length === 0) return next(ApiError.badRequest('No fields to update'));
 
-      updates.push("updated_at = datetime('now')");
+      updates.push('updated_at = NOW()');
       params.push(tutor.id);
 
-      db.prepare(`UPDATE tutors SET ${updates.join(', ')} WHERE id = ?`).run(...params);
+      await pool.query(`UPDATE tutors SET ${updates.join(', ')} WHERE id = $${paramIdx}`, params);
       res.json({ success: true });
     } catch (err) {
       next(err);
     }
   },
 
-  /**
-   * POST /api/users/avatar
-   * Upload user profile picture (student or teacher)
-   */
+  /** POST /api/users/avatar */
   uploadAvatar(req, res, next) {
     avatarUpload(req, res, async (err) => {
       if (err) {
@@ -212,14 +210,14 @@ const uploadController = {
       const url = `/uploads/avatars/${req.file.filename}`;
 
       // Delete old avatar if exists
-      const current = db.prepare('SELECT avatar_url FROM users WHERE id = ?').get(req.user.id);
+      const currentR = await pool.query('SELECT avatar_url FROM users WHERE id = $1', [req.user.id]);
+      const current = currentR.rows[0];
       if (current?.avatar_url && current.avatar_url.startsWith('/uploads/avatars/')) {
         const oldPath = path.join(uploadsDir, current.avatar_url);
         if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
       }
 
-      db.prepare("UPDATE users SET avatar_url = ?, updated_at = datetime('now') WHERE id = ?")
-        .run(url, req.user.id);
+      await pool.query('UPDATE users SET avatar_url = $1, updated_at = NOW() WHERE id = $2', [url, req.user.id]);
 
       res.json({ success: true, data: { avatarUrl: url } });
     });

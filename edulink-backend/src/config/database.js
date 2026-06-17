@@ -1,28 +1,20 @@
-const Database = require('better-sqlite3');
-const path = require('path');
-const fs = require('fs');
-const env = require('./env');
+const { Pool } = require('pg');
 
-// Always resolve DB_PATH relative to the project root (where package.json lives),
-// not wherever the user happens to run `node` from.
-const PROJECT_ROOT = path.resolve(__dirname, '..', '..');
-const dbFullPath = path.isAbsolute(env.DB_PATH)
-  ? env.DB_PATH
-  : path.resolve(PROJECT_ROOT, env.DB_PATH);
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL || 'postgresql://hashim@localhost:5432/edulink',
+});
 
-const dbDir = path.dirname(dbFullPath);
-if (!fs.existsSync(dbDir)) {
-  fs.mkdirSync(dbDir, { recursive: true });
-}
+pool.on('connect', () => {
+  console.log('[DB] Connected to PostgreSQL');
+});
 
-const db = new Database(dbFullPath);
+pool.on('error', (err) => {
+  console.error('[DB] Unexpected error on idle client', err);
+});
 
-// Enable WAL mode for better concurrent read performance
-db.pragma('journal_mode = WAL');
-db.pragma('foreign_keys = ON');
-db.pragma('busy_timeout = 5000');
+// Test connection on startup
+pool.query('SELECT 1')
+  .then(() => console.log('[DB] PostgreSQL connection verified'))
+  .catch(err => console.error('[DB] Connection failed:', err.message));
 
-// Log where the database is so it's always clear
-console.log(`[DB] Using database at: ${dbFullPath}`);
-
-module.exports = db;
+module.exports = pool;

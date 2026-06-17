@@ -1,20 +1,22 @@
-const db = require('../config/database');
+const pool = require('../config/database');
 
-function show(req, res) {
+async function show(req, res) {
   const { token } = req.query;
 
   if (!token) {
     return res.status(400).send(errorPage('Missing reset token.', 'Please use the link from your email.'));
   }
 
-  const reset = db.prepare(`
-    SELECT * FROM password_resets
-    WHERE token = ? AND used = 0 AND expires_at > datetime('now')
-  `).get(token);
+  const rr = await pool.query(
+    `SELECT * FROM password_resets
+     WHERE token = $1 AND used = 0 AND expires_at > NOW()`,
+    [token]
+  );
+  const reset = rr.rows[0];
 
   if (!reset) {
-    const used = db.prepare('SELECT * FROM password_resets WHERE token = ? AND used = 1').get(token);
-    if (used) {
+    const usedR = await pool.query('SELECT * FROM password_resets WHERE token = $1 AND used = 1', [token]);
+    if (usedR.rows[0]) {
       return res.status(400).send(errorPage(
         'Link Already Used',
         'This reset link has already been used. Each link works only once. Please request a new one.'
