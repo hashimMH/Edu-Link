@@ -45,6 +45,8 @@ const uploadController = {
 
       const key = `videos/${uuidv4()}${path.extname(req.file.originalname)}`;
       const url = await uploadToSpaces(req.file.buffer, key, req.file.mimetype);
+      if (!url) return next(ApiError.internal('Storage not configured'));
+
 
       // Delete old video from Spaces if exists
       const oldR = await pool.query('SELECT intro_video_url FROM tutors WHERE id = $1', [tutor.id]);
@@ -68,6 +70,8 @@ const uploadController = {
 
       const key = `certificates/${uuidv4()}${path.extname(req.file.originalname)}`;
       const url = await uploadToSpaces(req.file.buffer, key, req.file.mimetype);
+      if (!url) return next(ApiError.internal('Storage not configured'));
+
 
       const title = req.body.title || 'Certificate';
       const id = uuidv4();
@@ -148,6 +152,8 @@ const uploadController = {
 
       const key = `avatars/avatar_${req.user.id}_${Date.now()}${path.extname(req.file.originalname)}`;
       const url = await uploadToSpaces(req.file.buffer, key, req.file.mimetype);
+      if (!url) return next(ApiError.internal('Storage not configured'));
+
 
       // Delete old avatar from Spaces
       const oldR = await pool.query('SELECT avatar_url FROM users WHERE id = $1', [req.user.id]);
