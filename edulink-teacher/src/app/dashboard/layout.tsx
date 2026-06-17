@@ -10,15 +10,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   useEffect(() => {
     const token = localStorage.getItem('teacher_token');
-    if (!token) {
-      router.replace('/login');
-    } else {
+    if (token) {
       setReady(true);
+    } else {
+      router.replace('/login');
     }
-  }, [router]);
+  }, []); // Run once on mount only
 
   if (!ready) {
-    return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>;
+    return <div className="min-h-screen flex items-center justify-center bg-gray-50"><div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary" /></div>;
   }
 
   return (

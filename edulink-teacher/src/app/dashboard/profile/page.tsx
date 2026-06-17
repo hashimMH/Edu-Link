@@ -44,7 +44,8 @@ export default function ProfilePage() {
           setTutor(myTutor);
           // Get full tutor data from API
           try {
-            const res = await fetch(`/api/users/tutors/${myTutor.id}`, {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003';
+            const res = await fetch(`${apiUrl}/api/users/tutors/${myTutor.id}`, {
               headers: { 'Authorization': 'Bearer ' + localStorage.getItem('teacher_token') }
             });
             const full = await res.json();
