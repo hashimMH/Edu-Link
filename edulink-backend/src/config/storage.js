@@ -14,7 +14,7 @@ function getS3() {
     const bucket = process.env.SPACES_BUCKET || 'edulink-uploads';
     const endpoint = process.env.SPACES_ENDPOINT || 'nyc3.digitaloceanspaces.com';
     if (!key || !secret) { console.warn('[S3] Credentials missing'); return (S3 = false); }
-    S3 = { client: new AWS.S3({ endpoint: `https://${endpoint}`, accessKeyId: key, secretAccessKey: secret, region: 'nyc3' }), bucket, cdn: `https://${bucket}.${endpoint}` };
+    S3 = { client: new AWS.S3({ endpoint: endpoint, s3ForcePathStyle: false, accessKeyId: key, secretAccessKey: secret, region: 'nyc3' }), bucket, cdn: `https://${bucket}.${endpoint}` };
     console.log('[S3] DO Spaces ready');
     return S3;
   } catch(e) { console.warn('[S3] Init failed:', e.message); return (S3 = false); }
