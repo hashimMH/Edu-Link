@@ -7,4 +7,4 @@ RUN npm ci --omit=dev
 COPY edulink-backend/ .
 USER app
 EXPOSE 8080
-CMD node migrations/run.js && node src/index.js
+CMD node src/index.js
