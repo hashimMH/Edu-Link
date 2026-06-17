@@ -10,8 +10,7 @@ const { errorHandler, notFound } = require('./middleware/errorHandler');
 const { generalLimiter } = require('./middleware/rateLimiter');
 const logger = require('./utils/logger');
 const { setIO } = require('./config/io');
-const socketHandler = require('./config/socket');
-const { serveUploads } = require('./controllers/uploadController');
+const path = require('path');
 const pool = require('./config/database');
 
 const app = express();
@@ -63,9 +62,6 @@ if (env.NODE_ENV === 'development') {
 // --- Trust proxy ---
 app.set('trust proxy', 1);
 
-// --- Serve uploaded files ---
-serveUploads(app);
-
 // --- Password reset page (public, no auth) ---
 const resetPage = require('./controllers/resetPageController');
 app.get('/reset-password', resetPage.show);
@@ -87,7 +83,6 @@ app.get('/', (req, res) => {
   });
 });
 
-// --- Routes ---
 app.use('/api', routes);
 
 // --- Error handling ---
