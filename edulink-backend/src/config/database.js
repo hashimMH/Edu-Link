@@ -2,6 +2,7 @@ const { Pool } = require('pg');
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL || 'postgresql://hashim@localhost:5432/edulink',
+  ssl: { rejectUnauthorized: false },
 });
 
 pool.on('connect', () => {
