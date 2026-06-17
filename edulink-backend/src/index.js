@@ -77,13 +77,19 @@ app.get('/favicon.ico', (req, res) => res.status(204).end());
 
 // --- Root health check ---
 const { getFirebaseAdmin } = require('./config/firebase');
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
   const fb = getFirebaseAdmin();
+  let dbOk = false;
+  try {
+    await pool.query('SELECT 1');
+    dbOk = true;
+  } catch(_) {}
   res.json({
     success: true,
     message: 'EduLink API Server',
     version: '1.0.0',
     firebase: !!fb,
+    database: dbOk,
   });
 });
 
