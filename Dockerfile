@@ -1,4 +1,5 @@
 FROM node:22-alpine
+RUN apk add --no-cache libpq
 WORKDIR /app
 RUN addgroup -g 1001 app && adduser -u 1001 -G app -D app
 COPY edulink-backend/package.json edulink-backend/package-lock.json* ./
