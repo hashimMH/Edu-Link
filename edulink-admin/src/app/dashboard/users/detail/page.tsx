@@ -81,7 +81,7 @@ export default function UserDetailPage() {
         <div className="bg-white rounded-xl shadow-sm border p-6 flex flex-col items-center">
           <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center mb-4 overflow-hidden">
             {user.avatar_url ? (
-              <img src={`${process.env.NEXT_PUBLIC_API_URL || ''}${user.avatar_url}`} alt="" className="w-full h-full object-cover" />
+              <img src={user.avatar_url?.startsWith('http') ? user.avatar_url : `${process.env.NEXT_PUBLIC_API_URL || ''}${user.avatar_url}`} alt="" className="w-full h-full object-cover" />
             ) : (
               <span className="text-3xl text-gray-400 font-medium">
                 {(user.first_name?.[0] || '?').toUpperCase()}

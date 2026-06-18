@@ -105,7 +105,9 @@ const uploadController = {
       let url;
       const s3 = getS3Helper();
       if (s3) {
-        url = await s3.upload(req.file.buffer, `videos/${uuidv4()}${path.extname(req.file.originalname)}`, req.file.mimetype);
+        const buffer = require('fs').readFileSync(req.file.path);
+        url = await s3.upload(buffer, `videos/${uuidv4()}${path.extname(req.file.originalname)}`, req.file.mimetype);
+        try { require('fs').unlinkSync(req.file.path); } catch (_) {}
       } else {
         url = `/uploads/videos/${req.file.filename}`;
       }
@@ -132,7 +134,9 @@ const uploadController = {
       let url;
       const s3 = getS3Helper();
       if (s3) {
-        url = await s3.upload(req.file.buffer, `certificates/${uuidv4()}${path.extname(req.file.originalname)}`, req.file.mimetype);
+        const buffer = require('fs').readFileSync(req.file.path);
+        url = await s3.upload(buffer, `certificates/${uuidv4()}${path.extname(req.file.originalname)}`, req.file.mimetype);
+        try { require('fs').unlinkSync(req.file.path); } catch (_) {}
       } else {
         url = `/uploads/certificates/${req.file.filename}`;
       }
@@ -236,7 +240,10 @@ const uploadController = {
       let url;
       const s3 = getS3Helper();
       if (s3) {
-        url = await s3.upload(req.file.buffer, `avatars/avatar_${req.user.id}_${Date.now()}${path.extname(req.file.originalname)}`, req.file.mimetype);
+        const buffer = require('fs').readFileSync(req.file.path);
+        url = await s3.upload(buffer, `avatars/avatar_${req.user.id}_${Date.now()}${path.extname(req.file.originalname)}`, req.file.mimetype);
+        // Clean up temp file
+        try { require('fs').unlinkSync(req.file.path); } catch (_) {}
       } else {
         url = `/uploads/avatars/${req.file.filename}`;
       }
