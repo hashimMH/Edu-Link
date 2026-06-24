@@ -84,9 +84,29 @@ android {
         applicationId "com.tech42.edulink"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 11
+        versionName "1.1.1"
     }
+
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = false
+        }
+    }
+
+    // Patch prebuilt .so files for 16 KB alignment — runs after native lib merge
+    tasks.matching { it.name == 'mergeReleaseNativeLibs' }.configureEach { task ->
+        task.doLast {
+            def outDir = file("${project.buildDir}/intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib")
+            if (outDir.exists()) {
+                exec {
+                    commandLine 'python3', "${rootDir}/elf_fix.py", outDir.absolutePath
+                    ignoreExitValue = true
+                }
+            }
+        }
+    }
+
     signingConfigs {
         debug {
             storeFile file('debug.keystore')
@@ -94,16 +114,24 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            if (project.hasProperty('EDULINK_UPLOAD_STORE_FILE')) {
+                storeFile file(EDULINK_UPLOAD_STORE_FILE)
+                storePassword EDULINK_UPLOAD_STORE_PASSWORD
+                keyAlias EDULINK_UPLOAD_KEY_ALIAS
+                keyPassword EDULINK_UPLOAD_KEY_PASSWORD
+            }
+        }
     }
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
-            minifyEnabled enableProguardInReleaseBuilds
+            // Production signing — set up your keystore before publishing:
+            // https://reactnative.dev/docs/signed-apk-android
+            signingConfig signingConfigs.release
+            minifyEnabled true
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }

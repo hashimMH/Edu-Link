@@ -152,7 +152,7 @@ const MyScheduleScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {flex: 1, backgroundColor: '#fff'},
+  container: {flex: 1, backgroundColor: '#fff' , paddingTop:40},
   header: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     backgroundColor: '#F9FAFB', paddingVertical: 16, paddingHorizontal: 16,

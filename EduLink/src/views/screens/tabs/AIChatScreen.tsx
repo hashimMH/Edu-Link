@@ -151,7 +151,7 @@ const AIChatScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {flex: 1, backgroundColor: '#F9FAFB'},
+  container: {flex: 1, backgroundColor: '#F9FAFB', paddingTop:40},
   header: {
     backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#E5E7EB',
     paddingHorizontal: 16, paddingVertical: 12,

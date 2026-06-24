@@ -129,7 +129,7 @@ const HomeScreen = ({ navigation }: { navigation: HomeScreenNavigationProp }) =>
 
   return (
     <Background>
-      <View style={[styles.header, { top: Platform.OS === 'ios' ? insets.top > 0 ? insets.top + 10 : 40 : 40 }]}>
+      <View style={[styles.header, { top: Platform.OS === 'ios' ? insets.top > 0 ? insets.top + 10 : 40 : 60 }]}>
         <TouchableOpacity style={styles.notificationButton} onPress={() => {
           setUnreadCount(0);
           navigation.navigate('NotificationScreen');
@@ -143,7 +143,7 @@ const HomeScreen = ({ navigation }: { navigation: HomeScreenNavigationProp }) =>
         </TouchableOpacity>
       </View>
       <HomeUperView>
-        <View style={[styles.title, { top: Platform.OS === 'ios' ? insets.top > 0 ? 55 : 40 : 40 }]}>
+        <View style={[styles.title, { top: Platform.OS === 'ios' ? insets.top > 0 ? 55 : 40 : 60 }]}>
           <View style={{ flex: 1, left: 20 }}>
             <Text style={styles.mainText}>Hello,</Text>
             <Text style={styles.mainText}>{userName || 'Student'} 👋</Text>

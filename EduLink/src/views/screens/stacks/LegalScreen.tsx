@@ -73,7 +73,7 @@ const LegalScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {flex: 1, backgroundColor: '#F9FAFB'},
+  container: {flex: 1, backgroundColor: '#F9FAFB', paddingTop:40},
   header: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     backgroundColor: '#F9FAFB', paddingVertical: 16, paddingHorizontal: 16,
